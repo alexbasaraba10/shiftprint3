@@ -5,7 +5,7 @@ import { materialsAPI } from '../utils/api';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import { Upload, MessageCircle, X, Loader2, Lock, Maximize2 } from 'lucide-react';
+import { Upload, MessageCircle, X, Loader2, Lock, Maximize2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import AuthModal from '../components/AuthModal';
 
@@ -376,27 +376,6 @@ const Calculator = () => {
                   </div>
                 </div>
               )}
-
-              {/* Price Preview */}
-              {estimatedPrice && (
-                <div style={{
-                  marginTop: '16px',
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  color: 'white'
-                }}>
-                  <h4 style={{ fontWeight: 600, marginBottom: '8px' }}>
-                    💰 {language === 'ru' ? 'Предварительная цена' : 'Preț estimat'}
-                  </h4>
-                  <div style={{ fontSize: '32px', fontWeight: 700, marginBottom: '4px' }}>
-                    ~{estimatedPrice.total} Lei
-                  </div>
-                  <div style={{ fontSize: '13px', opacity: 0.9 }}>
-                    ⚖️ {estimatedPrice.weight}г • ⏱️ {estimatedPrice.time}ч
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -546,7 +525,7 @@ const Calculator = () => {
                           </div>
                         </div>
 
-                        {/* Color Selection with circles */}
+                        {/* Color Selection with circles - NO TEXT, only color circles */}
                         {selectedMaterial === material.id && material.colors && material.colors.length > 0 && (
                           <div style={{
                             marginTop: '12px',
@@ -565,8 +544,8 @@ const Calculator = () => {
                                   onClick={() => setSelectedColor(color)}
                                   title={color}
                                   style={{
-                                    width: '40px',
-                                    height: '40px',
+                                    width: '44px',
+                                    height: '44px',
                                     borderRadius: '50%',
                                     background: getColorHex(color),
                                     border: selectedColor === color 
@@ -576,19 +555,33 @@ const Calculator = () => {
                                         : '2px solid transparent',
                                     cursor: 'pointer',
                                     boxShadow: selectedColor === color 
-                                      ? '0 0 0 2px var(--brand-hover), 0 4px 12px rgba(0,0,0,0.2)' 
+                                      ? '0 0 0 3px var(--brand-hover), 0 4px 12px rgba(0,0,0,0.25)' 
                                       : '0 2px 6px rgba(0,0,0,0.15)',
                                     transition: 'all 0.2s ease',
-                                    transform: selectedColor === color ? 'scale(1.1)' : 'scale(1)'
+                                    transform: selectedColor === color ? 'scale(1.15)' : 'scale(1)',
+                                    position: 'relative'
                                   }}
-                                />
+                                >
+                                  {selectedColor === color && (
+                                    <span style={{
+                                      position: 'absolute',
+                                      bottom: '-4px',
+                                      right: '-4px',
+                                      width: '18px',
+                                      height: '18px',
+                                      background: 'var(--brand-primary)',
+                                      borderRadius: '50%',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      color: 'white',
+                                      fontSize: '12px',
+                                      fontWeight: 'bold'
+                                    }}>✓</span>
+                                  )}
+                                </button>
                               ))}
                             </div>
-                            {selectedColor && (
-                              <p style={{ marginTop: '10px', fontSize: '13px', color: 'var(--brand-primary)', fontWeight: 500 }}>
-                                ✓ {selectedColor}
-                              </p>
-                            )}
                           </div>
                         )}
                       </div>
@@ -643,18 +636,62 @@ const Calculator = () => {
               </div>
             )}
 
+            {/* Price Preview - MOVED HERE before Order Button */}
+            {selectedFiles.length > 0 && estimatedPrice && (
+              <div style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                padding: '24px',
+                borderRadius: '16px',
+                color: 'white',
+                marginBottom: '20px'
+              }}>
+                <h4 style={{ fontWeight: 600, marginBottom: '12px', fontSize: '18px' }}>
+                  💰 {language === 'ru' ? 'Предварительная стоимость' : 'Cost estimat'}
+                </h4>
+                <div style={{ fontSize: '40px', fontWeight: 700, marginBottom: '8px' }}>
+                  ~{estimatedPrice.total} Lei
+                </div>
+                <div style={{ fontSize: '14px', opacity: 0.9 }}>
+                  ⚖️ {language === 'ru' ? 'Вес' : 'Greutate'}: {estimatedPrice.weight}г • ⏱️ {language === 'ru' ? 'Время печати' : 'Timp printare'}: {estimatedPrice.time}ч
+                </div>
+                <div style={{ marginTop: '12px', fontSize: '12px', opacity: 0.8 }}>
+                  * {language === 'ru' ? 'Окончательная цена будет подтверждена оператором' : 'Prețul final va fi confirmat de operator'}
+                </div>
+              </div>
+            )}
+
             {/* Order Button */}
             {selectedFiles.length > 0 && (
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <Button className="btn-primary" onClick={handleOrder} disabled={loading} style={{ flex: 1, minWidth: '200px' }}>
-                  {loading ? <Loader2 className="animate-spin" size={20} /> : (
-                    <><Lock size={18} />{language === 'ru' ? 'Оформить заказ' : 'Plasează comanda'}</>
-                  )}
-                </Button>
-                <Button className="btn-secondary" onClick={() => window.open('https://t.me/Shiftprint', '_blank')}>
-                  <MessageCircle size={20} />
-                  {t('calculator.askOperator')}
-                </Button>
+              <div>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                  <Button className="btn-primary" onClick={handleOrder} disabled={loading} style={{ flex: 1, minWidth: '200px' }}>
+                    {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                      <><Lock size={18} />{language === 'ru' ? 'Оформить заказ' : 'Plasează comanda'}</>
+                    )}
+                  </Button>
+                  <Button className="btn-secondary" onClick={() => window.open('https://t.me/Shiftprint', '_blank')}>
+                    <MessageCircle size={20} />
+                    {t('calculator.askOperator')}
+                  </Button>
+                </div>
+                
+                {/* SMS Verification Notice */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '14px 18px',
+                  background: 'rgba(14, 165, 233, 0.1)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(14, 165, 233, 0.2)'
+                }}>
+                  <ShieldCheck size={20} color="#0ea5e9" />
+                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                    {language === 'ru' 
+                      ? 'Для оформления заказа требуется подтверждение номера телефона с помощью SMS' 
+                      : 'Pentru a plasa comanda, este necesară confirmarea numărului de telefon prin SMS'}
+                  </span>
+                </div>
               </div>
             )}
           </div>
