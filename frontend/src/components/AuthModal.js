@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Phone, User, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from './ui/button';
@@ -17,13 +17,58 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const recaptchaContainerRef = useRef(null);
 
-  const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
+  // Initialize reCAPTCHA when modal opens and step is phone
+  useEffect(() => {
+    if (isOpen && step === 'phone' && !window.recaptchaVerifier) {
+      initRecaptcha();
+    }
+    
+    return () => {
+      // Cleanup on unmount
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (e) {}
+        window.recaptchaVerifier = null;
+      }
+    };
+  }, [isOpen, step]);
+
+  const initRecaptcha = () => {
+    try {
+      // Clear any existing verifier
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (e) {}
+        window.recaptchaVerifier = null;
+      }
+
+      // Create new verifier
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: () => {}
+        size: 'normal', // Use normal size for better visibility
+        callback: (response) => {
+          console.log('reCAPTCHA verified');
+          setRecaptchaReady(true);
+        },
+        'expired-callback': () => {
+          console.log('reCAPTCHA expired');
+          setRecaptchaReady(false);
+          toast.warning(language === 'ru' ? 'reCAPTCHA истекла. Пожалуйста, повторите.' : 'reCAPTCHA a expirat. Vă rugăm să repetați.');
+        }
       });
+
+      // Render the reCAPTCHA
+      window.recaptchaVerifier.render().then((widgetId) => {
+        console.log('reCAPTCHA rendered, widgetId:', widgetId);
+      }).catch((error) => {
+        console.error('reCAPTCHA render error:', error);
+      });
+    } catch (error) {
+      console.error('reCAPTCHA init error:', error);
     }
   };
 
@@ -41,21 +86,50 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       return;
     }
 
+    if (!window.recaptchaVerifier) {
+      toast.error(language === 'ru' ? 'Пожалуйста, подтвердите reCAPTCHA' : 'Vă rugăm să confirmați reCAPTCHA');
+      initRecaptcha();
+      return;
+    }
+
     setLoading(true);
     try {
-      setupRecaptcha();
+      console.log('Sending OTP to:', phone);
       const confirmation = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      console.log('OTP sent successfully');
       setConfirmationResult(confirmation);
       setStep('otp');
       toast.success(language === 'ru' ? 'SMS код отправлен!' : 'Cod SMS trimis!');
     } catch (error) {
       console.error('OTP error:', error);
-      toast.error(language === 'ru' ? 'Ошибка отправки SMS. Проверьте номер телефона.' : 'Eroare la trimiterea SMS. Verificați numărul.');
+      
+      let errorMessage = language === 'ru' ? 'Ошибка отправки SMS.' : 'Eroare la trimiterea SMS.';
+      
+      if (error.code === 'auth/invalid-phone-number') {
+        errorMessage = language === 'ru' ? 'Неверный формат номера телефона' : 'Format invalid al numărului de telefon';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = language === 'ru' ? 'Слишком много попыток. Попробуйте позже.' : 'Prea multe încercări. Încercați mai târziu.';
+      } else if (error.code === 'auth/quota-exceeded') {
+        errorMessage = language === 'ru' ? 'Превышен лимит SMS. Попробуйте позже.' : 'Limita SMS depășită. Încercați mai târziu.';
+      } else if (error.code === 'auth/captcha-check-failed') {
+        errorMessage = language === 'ru' ? 'Ошибка проверки reCAPTCHA. Попробуйте ещё раз.' : 'Eroare verificare reCAPTCHA. Încercați din nou.';
+      }
+      
+      toast.error(errorMessage);
+      
       // Reset recaptcha on error
       if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (e) {}
         window.recaptchaVerifier = null;
       }
+      setRecaptchaReady(false);
+      
+      // Re-init after a delay
+      setTimeout(() => {
+        initRecaptcha();
+      }, 1000);
     }
     setLoading(false);
   };
@@ -80,31 +154,62 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       };
 
       localStorage.setItem('user', JSON.stringify(userData));
-      toast.success(language === 'ru' ? '✅ Номер подтверждён! Добро пожаловать!' : '✅ Număr confirmat! Bine ați venit!');
+      toast.success(language === 'ru' ? '✅ Номер подтверждён!' : '✅ Număr confirmat!');
       onSuccess(userData);
-      onClose();
-      
-      // Reset form
-      setStep('name');
-      setPhone('+373');
-      setOtp('');
-      setFirstName('');
-      setLastName('');
+      handleClose();
     } catch (error) {
       console.error('Verify error:', error);
-      toast.error(language === 'ru' ? 'Неверный код. Попробуйте ещё раз.' : 'Cod invalid. Încercați din nou.');
+      
+      let errorMessage = language === 'ru' ? 'Неверный код.' : 'Cod invalid.';
+      if (error.code === 'auth/invalid-verification-code') {
+        errorMessage = language === 'ru' ? 'Неверный код подтверждения' : 'Cod de verificare invalid';
+      } else if (error.code === 'auth/code-expired') {
+        errorMessage = language === 'ru' ? 'Код истёк. Запросите новый.' : 'Codul a expirat. Solicitați unul nou.';
+      }
+      
+      toast.error(errorMessage);
     }
     setLoading(false);
   };
 
   const handleResendOTP = async () => {
-    // Reset recaptcha
+    // Reset everything and go back to phone step
+    setOtp('');
+    setConfirmationResult(null);
     if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (e) {}
       window.recaptchaVerifier = null;
     }
+    setRecaptchaReady(false);
+    setStep('phone');
+    
+    // Re-init recaptcha
+    setTimeout(() => {
+      initRecaptcha();
+    }, 500);
+  };
+
+  const handleClose = () => {
+    // Reset state
+    setStep('name');
+    setPhone('+373');
     setOtp('');
-    await handleSendOTP();
+    setFirstName('');
+    setLastName('');
+    setConfirmationResult(null);
+    setRecaptchaReady(false);
+    
+    // Clear recaptcha
+    if (window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (e) {}
+      window.recaptchaVerifier = null;
+    }
+    
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -131,10 +236,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         maxWidth: '440px',
         padding: '36px',
         position: 'relative',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        maxHeight: '90vh',
+        overflowY: 'auto'
       }}>
         <button
-          onClick={onClose}
+          onClick={handleClose}
           style={{
             position: 'absolute',
             top: '16px',
@@ -151,8 +258,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         >
           <X size={20} color="#666" />
         </button>
-
-        <div id="recaptcha-container"></div>
 
         {/* Step indicator */}
         <div style={{ 
@@ -293,7 +398,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               </button>
             </div>
 
-            <div style={{ marginBottom: '24px' }}>
+            <div style={{ marginBottom: '20px' }}>
               <Label style={{ marginBottom: '8px', display: 'block', fontWeight: 600 }}>
                 {language === 'ru' ? 'Номер телефона' : 'Număr de telefon'}
               </Label>
@@ -304,6 +409,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 placeholder="+373 XX XXX XXX"
                 style={{ fontSize: '20px', padding: '16px', borderRadius: '12px', fontFamily: 'monospace' }}
               />
+            </div>
+
+            {/* reCAPTCHA container */}
+            <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+              <div id="recaptcha-container" ref={recaptchaContainerRef}></div>
             </div>
 
             <Button
@@ -416,18 +526,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               marginTop: '20px' 
             }}>
               <button
-                onClick={() => setStep('phone')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#666',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                {language === 'ru' ? '← Изменить номер' : '← Schimbă numărul'}
-              </button>
-              <button
                 onClick={handleResendOTP}
                 disabled={loading}
                 style={{
@@ -438,7 +536,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                   fontSize: '14px'
                 }}
               >
-                {language === 'ru' ? 'Отправить повторно' : 'Retrimite codul'}
+                {language === 'ru' ? 'Отправить код повторно' : 'Retrimite codul'}
               </button>
             </div>
           </>
