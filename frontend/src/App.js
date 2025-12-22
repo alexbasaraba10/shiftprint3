@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import FloatingContactButton from "./components/FloatingContactButton";
 import Profile from "./pages/Profile";
 import ScrollToTop from "./components/ScrollToTop";
+import OrderStatusTracker from "./components/OrderStatusTracker";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           </div>
           <Footer />
           <FloatingContactButton />
+          <OrderStatusTracker />
           <Toaster position="top-center" />
         </div>
       </BrowserRouter>
