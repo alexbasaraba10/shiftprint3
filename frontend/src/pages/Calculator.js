@@ -162,15 +162,29 @@ const Calculator = () => {
   const handleDimensionInput = (axis, value) => {
     if (!dimensions) return;
     
+    // Update the input field value immediately
+    setCustomDimensions(prev => ({ ...prev, [axis]: value }));
+    
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue <= 0) {
-      setCustomDimensions(prev => ({ ...prev, [axis]: value }));
       return;
     }
     
     // Calculate new scale based on the changed dimension
     const newScale = numValue / dimensions[axis];
     handleScaleChange(newScale);
+  };
+
+  const resetScale = () => {
+    setScale(1);
+    if (dimensions) {
+      setCustomDimensions({
+        x: dimensions.x.toFixed(1),
+        y: dimensions.y.toFixed(1),
+        z: dimensions.z.toFixed(1)
+      });
+    }
+    toast.success(language === 'ru' ? 'Масштаб сброшен' : 'Scală resetată');
   };
 
   const handleMaterialSelect = (materialId) => {
