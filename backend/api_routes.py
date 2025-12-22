@@ -453,6 +453,28 @@ async def get_orders():
     orders = await db.orders.find().sort("uploadDate", -1).to_list(100)
     return [{"id": str(o['_id']), "fileName": o['fileName'], "materialName": o.get('materialName'), "status": o['status'], "uploadDate": o['uploadDate'].isoformat()} for o in orders]
 
+@router.get("/api/orders/{order_id}/status")
+async def get_order_status(order_id: str):
+    """Get order status for client tracking"""
+    try:
+        order = await db.orders.find_one({"_id": ObjectId(order_id)})
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        
+        return {
+            "orderId": order_id,
+            "status": order.get('status', 'pending'),
+            "fileName": order.get('fileName'),
+            "materialName": order.get('materialName'),
+            "estimatedCost": order.get('estimatedCost'),
+            "finalCost": order.get('finalCost'),
+            "priceModifiedDate": order.get('priceModifiedDate').isoformat() if order.get('priceModifiedDate') else None,
+            "approvedDate": order.get('approvedDate').isoformat() if order.get('approvedDate') else None,
+            "completedDate": order.get('completedDate').isoformat() if order.get('completedDate') else None
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 # ============ TELEGRAM WEBHOOK ============
 class TelegramUpdate(BaseModel):
     update_id: int
