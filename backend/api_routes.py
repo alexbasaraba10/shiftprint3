@@ -338,14 +338,18 @@ async def upload_file(
             electricity_cost = 0
             amortization_cost = 0
             print_time_hours = 0
+            base_cost = 0
+            final_price = 0
             
             if calculated_weight:
-                # Получаем тип материала и цену
+                # Получаем тип материала из названия или из БД
                 material_type = 'PLA'
-                if materialId:
-                    material = await db.materials.find_one({"_id": ObjectId(materialId)})
-                    if material:
-                        material_type = material.get('type', 'PLA')
+                if materialName:
+                    # Определяем тип из названия материала
+                    for mat_type in ['PETG', 'ABS', 'TPU', 'Nylon', 'PLA']:
+                        if mat_type.upper() in materialName.upper():
+                            material_type = mat_type
+                            break
                 
                 material_price = MATERIAL_PRICES.get(material_type, 290)
                 print_speed = PRINT_SPEEDS.get(layerHeight, 25)
