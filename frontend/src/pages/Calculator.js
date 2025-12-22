@@ -773,33 +773,21 @@ const Calculator = () => {
                   ~{estimatedPrice.total} MDL
                 </div>
                 
-                {/* Детализация расчёта */}
+                {/* Только основная информация для клиента */}
                 <div style={{ 
                   background: 'rgba(255,255,255,0.15)', 
                   borderRadius: '12px', 
                   padding: '16px',
                   marginBottom: '12px'
                 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '14px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ opacity: 0.85 }}>⚖️ {language === 'ru' ? 'Вес:' : 'Greutate:'}</span>
-                      <span style={{ fontWeight: 600 }}>{estimatedPrice.weight} г</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-around', fontSize: '14px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ opacity: 0.85, marginBottom: '4px' }}>⚖️ {language === 'ru' ? 'Вес' : 'Greutate'}</div>
+                      <div style={{ fontWeight: 700, fontSize: '18px' }}>{estimatedPrice.weight} г</div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ opacity: 0.85 }}>⏱️ {language === 'ru' ? 'Время:' : 'Timp:'}</span>
-                      <span style={{ fontWeight: 600 }}>{estimatedPrice.time} ч ({estimatedPrice.timeMinutes} мин)</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ opacity: 0.85 }}>🧵 {language === 'ru' ? 'Пластик:' : 'Plastic:'}</span>
-                      <span style={{ fontWeight: 600 }}>{estimatedPrice.plasticCost} MDL</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ opacity: 0.85 }}>⚡ {language === 'ru' ? 'Электричество:' : 'Electricitate:'}</span>
-                      <span style={{ fontWeight: 600 }}>{estimatedPrice.electricityCost} MDL</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gridColumn: 'span 2' }}>
-                      <span style={{ opacity: 0.85 }}>🔧 {language === 'ru' ? 'Амортизация оборудования:' : 'Amortizare echipament:'}</span>
-                      <span style={{ fontWeight: 600 }}>{estimatedPrice.amortizationCost} MDL</span>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ opacity: 0.85, marginBottom: '4px' }}>⏱️ {language === 'ru' ? 'Время печати' : 'Timp printare'}</div>
+                      <div style={{ fontWeight: 700, fontSize: '18px' }}>{estimatedPrice.time} ч</div>
                     </div>
                   </div>
                 </div>
