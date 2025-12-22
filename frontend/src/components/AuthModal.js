@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Phone, User, Loader2 } from 'lucide-react';
+import { X, Phone, User, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const { language } = useLanguage();
-  const [step, setStep] = useState('phone'); // phone, otp, name
+  const [step, setStep] = useState('name'); // name -> phone -> otp
   const [phone, setPhone] = useState('+373');
   const [otp, setOtp] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -25,6 +25,14 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         callback: () => {}
       });
     }
+  };
+
+  const handleNameSubmit = () => {
+    if (!firstName.trim() || !lastName.trim()) {
+      toast.error(language === 'ru' ? 'Заполните имя и фамилию' : 'Completați numele și prenumele');
+      return;
+    }
+    setStep('phone');
   };
 
   const handleSendOTP = async () => {
@@ -42,7 +50,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       toast.success(language === 'ru' ? 'SMS код отправлен!' : 'Cod SMS trimis!');
     } catch (error) {
       console.error('OTP error:', error);
-      toast.error(language === 'ru' ? 'Ошибка отправки SMS' : 'Eroare la trimiterea SMS');
+      toast.error(language === 'ru' ? 'Ошибка отправки SMS. Проверьте номер телефона.' : 'Eroare la trimiterea SMS. Verificați numărul.');
+      // Reset recaptcha on error
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
     }
     setLoading(false);
   };
@@ -56,31 +69,42 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
     try {
       await confirmationResult.confirm(otp);
+      
+      // Save user data
+      const userData = {
+        phone,
+        firstName,
+        lastName,
+        verified: true,
+        createdAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('user', JSON.stringify(userData));
+      toast.success(language === 'ru' ? '✅ Номер подтверждён! Добро пожаловать!' : '✅ Număr confirmat! Bine ați venit!');
+      onSuccess(userData);
+      onClose();
+      
+      // Reset form
       setStep('name');
+      setPhone('+373');
+      setOtp('');
+      setFirstName('');
+      setLastName('');
     } catch (error) {
       console.error('Verify error:', error);
-      toast.error(language === 'ru' ? 'Неверный код' : 'Cod invalid');
+      toast.error(language === 'ru' ? 'Неверный код. Попробуйте ещё раз.' : 'Cod invalid. Încercați din nou.');
     }
     setLoading(false);
   };
 
-  const handleComplete = () => {
-    if (!firstName || !lastName) {
-      toast.error(language === 'ru' ? 'Заполните имя и фамилию' : 'Completați numele și prenumele');
-      return;
+  const handleResendOTP = async () => {
+    // Reset recaptcha
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = null;
     }
-
-    const userData = {
-      phone,
-      firstName,
-      lastName,
-      createdAt: new Date().toISOString()
-    };
-
-    localStorage.setItem('user', JSON.stringify(userData));
-    toast.success(language === 'ru' ? 'Добро пожаловать!' : 'Bine ați venit!');
-    onSuccess(userData);
-    onClose();
+    setOtp('');
+    await handleSendOTP();
   };
 
   if (!isOpen) return null;
@@ -92,20 +116,22 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
+      background: 'rgba(0,0,0,0.6)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 10000,
-      padding: '20px'
+      padding: '20px',
+      backdropFilter: 'blur(4px)'
     }}>
       <div style={{
         background: 'white',
-        borderRadius: '20px',
+        borderRadius: '24px',
         width: '100%',
-        maxWidth: '420px',
-        padding: '32px',
-        position: 'relative'
+        maxWidth: '440px',
+        padding: '36px',
+        position: 'relative',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
       }}>
         <button
           onClick={onClose}
@@ -113,42 +139,162 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             position: 'absolute',
             top: '16px',
             right: '16px',
-            background: 'none',
+            background: '#f3f4f6',
             border: 'none',
             cursor: 'pointer',
-            padding: '8px'
+            padding: '8px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <X size={24} color="#666" />
+          <X size={20} color="#666" />
         </button>
 
         <div id="recaptcha-container"></div>
 
-        {step === 'phone' && (
+        {/* Step indicator */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: '8px', 
+          marginBottom: '28px' 
+        }}>
+          {['name', 'phone', 'otp'].map((s, i) => (
+            <div
+              key={s}
+              style={{
+                width: step === s ? '32px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                background: ['name', 'phone', 'otp'].indexOf(step) >= i 
+                  ? 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)' 
+                  : '#e5e7eb',
+                transition: 'all 0.3s ease'
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Step 1: Name */}
+        {step === 'name' && (
           <>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
               <div style={{
-                width: '64px',
-                height: '64px',
+                width: '72px',
+                height: '72px',
                 background: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
-                borderRadius: '16px',
+                borderRadius: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 16px'
+                margin: '0 auto 20px',
+                boxShadow: '0 10px 30px -10px rgba(14, 165, 233, 0.5)'
               }}>
-                <Phone size={32} color="white" />
+                <User size={36} color="white" />
               </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>
-                {language === 'ru' ? 'Вход в аккаунт' : 'Autentificare'}
+              <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '10px', color: '#111' }}>
+                {language === 'ru' ? 'Оформление заказа' : 'Plasare comandă'}
               </h2>
-              <p style={{ color: '#666', fontSize: '14px' }}>
-                {language === 'ru' ? 'Введите номер телефона для получения SMS-кода' : 'Introduceți numărul de telefon pentru a primi codul SMS'}
+              <p style={{ color: '#666', fontSize: '15px', lineHeight: 1.5 }}>
+                {language === 'ru' 
+                  ? 'Введите ваши данные для связи' 
+                  : 'Introduceți datele dvs. de contact'}
               </p>
             </div>
 
+            <div style={{ marginBottom: '18px' }}>
+              <Label style={{ marginBottom: '8px', display: 'block', fontWeight: 600 }}>
+                {language === 'ru' ? 'Имя' : 'Prenume'} *
+              </Label>
+              <Input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder={language === 'ru' ? 'Иван' : 'Ion'}
+                style={{ fontSize: '16px', padding: '14px', borderRadius: '12px' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '28px' }}>
+              <Label style={{ marginBottom: '8px', display: 'block', fontWeight: 600 }}>
+                {language === 'ru' ? 'Фамилия' : 'Nume'} *
+              </Label>
+              <Input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder={language === 'ru' ? 'Иванов' : 'Ionescu'}
+                style={{ fontSize: '16px', padding: '14px', borderRadius: '12px' }}
+              />
+            </div>
+
+            <Button
+              onClick={handleNameSubmit}
+              className="btn-primary"
+              style={{ width: '100%', height: '54px', fontSize: '16px', borderRadius: '14px' }}
+            >
+              {language === 'ru' ? 'Продолжить' : 'Continuă'}
+              <ArrowRight size={20} style={{ marginLeft: '8px' }} />
+            </Button>
+          </>
+        )}
+
+        {/* Step 2: Phone */}
+        {step === 'phone' && (
+          <>
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                background: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+                boxShadow: '0 10px 30px -10px rgba(14, 165, 233, 0.5)'
+              }}>
+                <Phone size={36} color="white" />
+              </div>
+              <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '10px', color: '#111' }}>
+                {language === 'ru' ? 'Подтверждение номера' : 'Confirmare număr'}
+              </h2>
+              <p style={{ color: '#666', fontSize: '15px', lineHeight: 1.5 }}>
+                {language === 'ru' 
+                  ? 'Мы отправим SMS с кодом подтверждения' 
+                  : 'Vom trimite un SMS cu codul de confirmare'}
+              </p>
+            </div>
+
+            {/* Show entered name */}
+            <div style={{
+              background: '#f8fafc',
+              padding: '14px 18px',
+              borderRadius: '12px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              <User size={20} color="#0ea5e9" />
+              <span style={{ fontWeight: 600, color: '#333' }}>{firstName} {lastName}</span>
+              <button 
+                onClick={() => setStep('name')}
+                style={{ 
+                  marginLeft: 'auto', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#0ea5e9', 
+                  cursor: 'pointer',
+                  fontSize: '13px'
+                }}
+              >
+                {language === 'ru' ? 'Изменить' : 'Modifică'}
+              </button>
+            </div>
+
             <div style={{ marginBottom: '24px' }}>
-              <Label style={{ marginBottom: '8px', display: 'block' }}>
+              <Label style={{ marginBottom: '8px', display: 'block', fontWeight: 600 }}>
                 {language === 'ru' ? 'Номер телефона' : 'Număr de telefon'}
               </Label>
               <Input
@@ -156,7 +302,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+373 XX XXX XXX"
-                style={{ fontSize: '18px', padding: '14px' }}
+                style={{ fontSize: '20px', padding: '16px', borderRadius: '12px', fontFamily: 'monospace' }}
               />
             </div>
 
@@ -164,21 +310,59 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               onClick={handleSendOTP}
               disabled={loading}
               className="btn-primary"
-              style={{ width: '100%', height: '52px' }}
+              style={{ width: '100%', height: '54px', fontSize: '16px', borderRadius: '14px' }}
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : (language === 'ru' ? 'Получить код' : 'Obține codul')}
+              {loading ? (
+                <Loader2 className="animate-spin" size={22} />
+              ) : (
+                <>
+                  {language === 'ru' ? 'Получить код SMS' : 'Obține codul SMS'}
+                  <ArrowRight size={20} style={{ marginLeft: '8px' }} />
+                </>
+              )}
             </Button>
+
+            <button
+              onClick={() => setStep('name')}
+              style={{
+                marginTop: '16px',
+                width: '100%',
+                background: 'none',
+                border: 'none',
+                color: '#666',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              {language === 'ru' ? '← Назад' : '← Înapoi'}
+            </button>
           </>
         )}
 
+        {/* Step 3: OTP */}
         {step === 'otp' && (
           <>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+                boxShadow: '0 10px 30px -10px rgba(16, 185, 129, 0.5)'
+              }}>
+                <ShieldCheck size={36} color="white" />
+              </div>
+              <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '10px', color: '#111' }}>
                 {language === 'ru' ? 'Введите код' : 'Introduceți codul'}
               </h2>
-              <p style={{ color: '#666', fontSize: '14px' }}>
-                {language === 'ru' ? `SMS отправлен на ${phone}` : `SMS trimis la ${phone}`}
+              <p style={{ color: '#666', fontSize: '15px', lineHeight: 1.5 }}>
+                {language === 'ru' 
+                  ? `SMS отправлен на номер ${phone}` 
+                  : `SMS trimis la numărul ${phone}`}
               </p>
             </div>
 
@@ -187,90 +371,76 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder="000000"
-                style={{ fontSize: '32px', textAlign: 'center', letterSpacing: '8px', padding: '16px' }}
+                placeholder="• • • • • •"
+                style={{ 
+                  fontSize: '36px', 
+                  textAlign: 'center', 
+                  letterSpacing: '12px', 
+                  padding: '20px',
+                  borderRadius: '14px',
+                  fontFamily: 'monospace'
+                }}
                 maxLength={6}
+                autoFocus
               />
             </div>
 
             <Button
               onClick={handleVerifyOTP}
-              disabled={loading}
+              disabled={loading || otp.length !== 6}
               className="btn-primary"
-              style={{ width: '100%', height: '52px' }}
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : (language === 'ru' ? 'Подтвердить' : 'Confirmă')}
-            </Button>
-
-            <button
-              onClick={() => setStep('phone')}
-              style={{
-                marginTop: '16px',
-                width: '100%',
-                background: 'none',
-                border: 'none',
-                color: '#0ea5e9',
-                cursor: 'pointer',
-                fontSize: '14px'
+              style={{ 
+                width: '100%', 
+                height: '54px', 
+                fontSize: '16px', 
+                borderRadius: '14px',
+                background: otp.length === 6 
+                  ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                  : undefined
               }}
             >
-              {language === 'ru' ? '← Изменить номер' : '← Schimbă numărul'}
-            </button>
-          </>
-        )}
-
-        {step === 'name' && (
-          <>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <div style={{
-                width: '64px',
-                height: '64px',
-                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                borderRadius: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 16px'
-              }}>
-                <User size={32} color="white" />
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>
-                {language === 'ru' ? 'Почти готово!' : 'Aproape gata!'}
-              </h2>
-              <p style={{ color: '#666', fontSize: '14px' }}>
-                {language === 'ru' ? 'Введите ваше имя и фамилию' : 'Introduceți numele și prenumele'}
-              </p>
-            </div>
-
-            <div style={{ marginBottom: '16px' }}>
-              <Label style={{ marginBottom: '8px', display: 'block' }}>
-                {language === 'ru' ? 'Имя' : 'Prenume'}
-              </Label>
-              <Input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder={language === 'ru' ? 'Иван' : 'Ion'}
-              />
-            </div>
-
-            <div style={{ marginBottom: '24px' }}>
-              <Label style={{ marginBottom: '8px', display: 'block' }}>
-                {language === 'ru' ? 'Фамилия' : 'Nume'}
-              </Label>
-              <Input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder={language === 'ru' ? 'Иванов' : 'Ionescu'}
-              />
-            </div>
-
-            <Button
-              onClick={handleComplete}
-              className="btn-primary"
-              style={{ width: '100%', height: '52px' }}
-            >
-              {language === 'ru' ? 'Завершить регистрацию' : 'Finalizează înregistrarea'}
+              {loading ? (
+                <Loader2 className="animate-spin" size={22} />
+              ) : (
+                <>
+                  <ShieldCheck size={20} style={{ marginRight: '8px' }} />
+                  {language === 'ru' ? 'Подтвердить и оформить' : 'Confirmă și plasează'}
+                </>
+              )}
             </Button>
+
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              gap: '20px', 
+              marginTop: '20px' 
+            }}>
+              <button
+                onClick={() => setStep('phone')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#666',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                {language === 'ru' ? '← Изменить номер' : '← Schimbă numărul'}
+              </button>
+              <button
+                onClick={handleResendOTP}
+                disabled={loading}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#0ea5e9',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                {language === 'ru' ? 'Отправить повторно' : 'Retrimite codul'}
+              </button>
+            </div>
           </>
         )}
       </div>
