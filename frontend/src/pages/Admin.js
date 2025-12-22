@@ -295,7 +295,7 @@ const Admin = () => {
           {t('nav.admin')}
         </h1>
 
-        <Tabs defaultValue="orders" style={{ width: '100%' }}>
+        <Tabs defaultValue="materials" style={{ width: '100%' }}>
           <TabsList style={{ 
             background: 'var(--bg-secondary)', 
             border: '1px solid var(--border-subtle)',
@@ -304,7 +304,6 @@ const Admin = () => {
             display: 'flex',
             flexWrap: 'wrap'
           }}>
-            <TabsTrigger value="orders">{t('admin.orders.title')}</TabsTrigger>
             <TabsTrigger value="materials">{t('admin.materials.title')}</TabsTrigger>
             <TabsTrigger value="gallery">{language === 'ru' ? 'Галерея' : 'Galerie'}</TabsTrigger>
             <TabsTrigger value="shop">{language === 'ru' ? 'Магазин' : 'Magazin'}</TabsTrigger>
