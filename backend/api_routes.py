@@ -509,6 +509,10 @@ async def telegram_webhook(update: TelegramUpdate):
                     {"$set": {"status": "approved", "approvedDate": datetime.utcnow()}}
                 )
                 
+                # Get order info
+                order = await db.orders.find_one({"_id": ObjectId(order_id)})
+                customer_name = order.get('customerName', 'Клиент')
+                
                 # Send confirmation
                 await bot.answer_callback_query(
                     callback_query_id=callback_id,
@@ -516,7 +520,6 @@ async def telegram_webhook(update: TelegramUpdate):
                 )
                 
                 # Update message
-                order = await db.orders.find_one({"_id": ObjectId(order_id)})
                 new_text = message.get('caption', '') + f"\n\n✅ <b>Статус:</b> ПОДТВЕРЖДЁН"
                 
                 await bot.edit_message_caption(
@@ -524,6 +527,12 @@ async def telegram_webhook(update: TelegramUpdate):
                     message_id=message_id,
                     caption=new_text,
                     parse_mode='HTML'
+                )
+                
+                await bot.send_message(
+                    chat_id=chat_id,
+                    text=f"✅ Заказ #{order_id} подтверждён!\n\n"
+                         f"👤 Клиент {customer_name} увидит уведомление на сайте."
                 )
             
             # Edit price
