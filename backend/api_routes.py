@@ -238,19 +238,25 @@ async def upload_file(
     if file.filename.lower().endswith('.stl'):
         # Get material density
         material_density = 1.24  # Default PLA
-        if materialId:
-            material = await db.materials.find_one({"_id": ObjectId(materialId)})
-            if material:
-                # Map material types to densities (g/cm³)
-                density_map = {
-                    'PLA': 1.24,
-                    'ABS': 1.04,
-                    'PETG': 1.27,
-                    'TPU': 1.21,
-                    'Nylon': 1.14,
-                    'ASA': 1.07
-                }
-                material_density = density_map.get(material.get('type', 'PLA'), 1.24)
+        material_type_from_db = 'PLA'
+        
+        if materialId and len(materialId) == 24:  # Valid ObjectId
+            try:
+                material = await db.materials.find_one({"_id": ObjectId(materialId)})
+                if material:
+                    material_type_from_db = material.get('type', 'PLA')
+                    # Map material types to densities (g/cm³)
+                    density_map = {
+                        'PLA': 1.24,
+                        'ABS': 1.04,
+                        'PETG': 1.27,
+                        'TPU': 1.21,
+                        'Nylon': 1.14,
+                        'ASA': 1.07
+                    }
+                    material_density = density_map.get(material_type_from_db, 1.24)
+            except:
+                pass  # Use default density
         
         stl_props = calculate_stl_volume_and_weight(str(file_path), material_density)
         
