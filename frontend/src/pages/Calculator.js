@@ -5,7 +5,7 @@ import { materialsAPI } from '../utils/api';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import { Upload, MessageCircle, X, Loader2, Lock, Maximize2, ShieldCheck } from 'lucide-react';
+import { Upload, MessageCircle, X, Loader2, Lock, Maximize2, ShieldCheck, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import AuthModal from '../components/AuthModal';
 
