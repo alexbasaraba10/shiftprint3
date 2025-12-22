@@ -310,6 +310,10 @@ const Calculator = () => {
 
         if (response.ok) {
           const data = await response.json();
+          
+          // Save orderId for tracking
+          localStorage.setItem('pendingOrderId', data.orderId);
+          
           saveToHistory({
             fileName: file.name,
             materialName: material ? (language === 'ru' ? material.name : material.nameRo) : 'Выбор оператора',
@@ -321,7 +325,7 @@ const Calculator = () => {
         }
       }
 
-      toast.success(language === 'ru' ? 'Заказ отправлен!' : 'Comandă trimisă!');
+      toast.success(language === 'ru' ? 'Заказ отправлен! Ожидайте подтверждения.' : 'Comandă trimisă! Așteptați confirmarea.');
       setSelectedFiles([]);
       setSelectedMaterial(null);
       setSelectedColor(null);
