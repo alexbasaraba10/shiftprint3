@@ -310,6 +310,56 @@ async def upload_file(
         
         if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
             bot = telegram.Bot(token=TELEGRAM_TOKEN)
+            
+            # ===== НАСТРОЙКИ СЕБЕСТОИМОСТИ (как в таблице) =====
+            ELECTRICITY_COST_PER_KW = 20      # MDL за кВт в час
+            PRINTER_POWER_WATTS = 350          # Мощность принтера в ваттах
+            PRINTER_AMORTIZATION_PER_HOUR = 22 # Амортизация принтера MDL/час
+            MARKUP_COEFFICIENT = 1.3           # Наценка 30%
+            
+            # Цены материалов (MDL/кг)
+            MATERIAL_PRICES = {
+                'PLA': 290, 'PETG': 320, 'ABS': 300, 'TPU': 450, 'Nylon': 550
+            }
+            
+            # Скорость печати (г/час) по высоте слоя
+            PRINT_SPEEDS = {
+                '0.15': 15, '0.2': 25, '0.28': 35, '0.32': 45
+            }
+            
+            # Рассчитываем себестоимость для админа
+            plastic_cost = 0
+            electricity_cost = 0
+            amortization_cost = 0
+            print_time_hours = 0
+            
+            if calculated_weight:
+                # Получаем тип материала и цену
+                material_type = 'PLA'
+                if materialId:
+                    material = await db.materials.find_one({"_id": ObjectId(materialId)})
+                    if material:
+                        material_type = material.get('type', 'PLA')
+                
+                material_price = MATERIAL_PRICES.get(material_type, 290)
+                print_speed = PRINT_SPEEDS.get(layerHeight, 25)
+                
+                # Время печати
+                print_time_hours = calculated_weight / print_speed
+                
+                # Себестоимость пластика
+                plastic_cost = (calculated_weight / 1000) * material_price
+                
+                # Себестоимость электричества
+                electricity_cost = print_time_hours * (PRINTER_POWER_WATTS / 1000) * ELECTRICITY_COST_PER_KW
+                
+                # Амортизация
+                amortization_cost = print_time_hours * PRINTER_AMORTIZATION_PER_HOUR
+                
+                # Итого себестоимость
+                base_cost = plastic_cost + electricity_cost + amortization_cost
+                final_price = round(base_cost * MARKUP_COEFFICIENT)
+            
             message = f"""🔔 <b>Новый заказ #{order_id}</b>
 
 📄 <b>Файл:</b> {file.filename}
@@ -317,10 +367,8 @@ async def upload_file(
 """
             if calculated_weight:
                 message += f"⚖️ <b>Вес:</b> {round(calculated_weight, 2)}г\n"
-            if calculated_time:
-                message += f"⏱ <b>Время печати:</b> {round(calculated_time, 2)}ч\n"
-            if estimated_cost:
-                message += f"💰 <b>Расчётная стоимость:</b> {round(estimated_cost, 2)} Lei\n"
+            if print_time_hours > 0:
+                message += f"⏱ <b>Время печати:</b> {round(print_time_hours, 1)}ч ({round(print_time_hours * 60)}мин)\n"
             if infill:
                 message += f"🔳 <b>Заполнение:</b> {infill}%\n"
             if layerHeight:
@@ -331,6 +379,19 @@ async def upload_file(
                 message += f"📋 <b>Назначение:</b> {purpose}\n"
             if loads:
                 message += f"📊 <b>Нагрузки:</b> {loads}\n"
+            
+            # ===== СЕБЕСТОИМОСТЬ (ТОЛЬКО ДЛЯ АДМИНА) =====
+            if calculated_weight and plastic_cost > 0:
+                message += f"""
+━━━━━━━━━━━━━━━━━━
+💵 <b>СЕБЕСТОИМОСТЬ:</b>
+🧵 Пластик: <code>{round(plastic_cost)} MDL</code>
+⚡ Электричество: <code>{round(electricity_cost)} MDL</code>
+🔧 Амортизация: <code>{round(amortization_cost)} MDL</code>
+📊 <b>Итого себест.:</b> <code>{round(base_cost)} MDL</code>
+━━━━━━━━━━━━━━━━━━
+💰 <b>Цена клиенту (×1.3):</b> <code>{final_price} MDL</code>
+"""
             
             # Customer info
             if customerName or customerPhone:
