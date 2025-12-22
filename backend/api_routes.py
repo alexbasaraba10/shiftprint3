@@ -591,19 +591,28 @@ async def telegram_webhook(update: TelegramUpdate):
                     new_price = float(text)
                     order_id = state.get('orderId')
                     
-                    # Update order with new price
+                    # Update order with new price and status
                     await db.orders.update_one(
                         {"_id": ObjectId(order_id)},
-                        {"$set": {"finalCost": new_price, "priceModifiedDate": datetime.utcnow()}}
+                        {"$set": {
+                            "finalCost": new_price, 
+                            "priceModifiedDate": datetime.utcnow(),
+                            "status": "price_changed"
+                        }}
                     )
                     
                     # Clear state
                     await db.telegram_states.delete_one({"chatId": chat_id})
                     
+                    # Get order info
+                    order = await db.orders.find_one({"_id": ObjectId(order_id)})
+                    customer_name = order.get('customerName', 'Клиент')
+                    
                     # Send confirmation
                     await bot.send_message(
                         chat_id=chat_id,
-                        text=f"✅ Цена для заказа #{order_id} обновлена: {new_price} Lei"
+                        text=f"✅ Цена для заказа #{order_id} обновлена: {new_price} MDL\n\n"
+                             f"👤 Клиент {customer_name} увидит уведомление на сайте."
                     )
                     
                 except ValueError:
