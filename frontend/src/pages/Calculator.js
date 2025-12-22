@@ -104,21 +104,83 @@ const Calculator = () => {
     const material = materials.find(m => m.id === selectedMaterial);
     if (!material) return;
 
+    // ===== НАСТРОЙКИ ИЗ ТАБЛИЦЫ =====
+    const ELECTRICITY_COST_PER_KW = 20;      // MDL за 1000 Ватт (кВт) в час
+    const PRINTER_POWER_WATTS = 350;          // Мощность принтера в ваттах (средняя для FDM)
+    const PRINTER_AMORTIZATION_PER_HOUR = 22; // Амортизация принтера MDL/час
+    const MARKUP_COEFFICIENT = 1.3;           // Наценка 30%
+    
+    // Плотность материалов (г/см³)
+    const densityMap = { 
+      'PLA': 1.24, 
+      'ABS': 1.04, 
+      'PETG': 1.27, 
+      'TPU': 1.21, 
+      'Nylon': 1.14 
+    };
+    
+    // Цены материалов из таблицы (MDL/кг) - можно переопределить из базы данных
+    const materialPriceMap = {
+      'PLA': 290,
+      'PETG': 320,
+      'ABS': 300,
+      'TPU': 450,
+      'Nylon': 550
+    };
+    
+    // Скорость печати (г/час) зависит от высоты слоя
+    const printSpeedMap = {
+      '0.15': 15,   // качество - медленно
+      '0.2': 25,    // стандарт
+      '0.28': 35,   // быстро
+      '0.32': 45    // максимум
+    };
+    
+    const density = densityMap[material.type] || 1.24;
+    const materialPrice = material.price || materialPriceMap[material.type] || 290;
+    const printSpeed = printSpeedMap[layerHeight] || 25;
+    const infillPercent = parseInt(infill) / 100;
+    
+    // 1. Расчёт веса (объём из STL уже в мм³)
+    // Используем реальный объём модели с учётом масштаба
     const volumeMm3 = dimensions.x * dimensions.y * dimensions.z * Math.pow(scale, 3);
     const volumeCm3 = volumeMm3 / 1000;
     
-    const densityMap = { 'PLA': 1.24, 'ABS': 1.04, 'PETG': 1.27, 'TPU': 1.21, 'Nylon': 1.14 };
-    const density = densityMap[material.type] || 1.24;
-    const infillPercent = parseInt(infill) / 100;
-    const weight = volumeCm3 * density * (0.2 + 0.8 * infillPercent);
-    const printTime = weight / 30;
+    // Вес = объём × плотность × (стенки 20% + заполнение)
+    const weight = volumeCm3 * density * (0.15 + 0.85 * infillPercent);
     
-    const materialCost = (weight / 1000) * (material.price || 500);
-    const electricityCost = printTime * 0.3 * 2.5;
-    const laborCost = printTime * 20;
-    const total = (materialCost + electricityCost + laborCost) * 1.3;
+    // 2. Время печати в часах
+    const printTimeHours = weight / printSpeed;
+    const printTimeMinutes = printTimeHours * 60;
     
-    setEstimatedPrice({ weight: weight.toFixed(1), time: printTime.toFixed(1), total: Math.round(total) });
+    // 3. Стоимость пластика (MDL)
+    // Формула: (Вес в граммах / 1000) × Цена за кг
+    const plasticCost = (weight / 1000) * materialPrice;
+    
+    // 4. Стоимость электричества (MDL)
+    // Формула: (Время в часах) × (Мощность в кВт) × (Цена за кВт)
+    const electricityCost = printTimeHours * (PRINTER_POWER_WATTS / 1000) * ELECTRICITY_COST_PER_KW;
+    
+    // 5. Амортизация принтера (MDL)
+    // Формула: Время в часах × Амортизация за час
+    const amortizationCost = printTimeHours * PRINTER_AMORTIZATION_PER_HOUR;
+    
+    // 6. Итого (с наценкой)
+    const baseCost = plasticCost + electricityCost + amortizationCost;
+    const total = Math.round(baseCost * MARKUP_COEFFICIENT);
+    
+    // Минимальная стоимость 50 MDL
+    const finalTotal = Math.max(50, total);
+    
+    setEstimatedPrice({ 
+      weight: weight.toFixed(1), 
+      time: printTimeHours.toFixed(1), 
+      timeMinutes: Math.round(printTimeMinutes),
+      plasticCost: Math.round(plasticCost),
+      electricityCost: Math.round(electricityCost),
+      amortizationCost: Math.round(amortizationCost),
+      total: finalTotal 
+    });
   };
 
   const handleFileChange = (e) => {
