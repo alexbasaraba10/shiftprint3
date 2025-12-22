@@ -310,34 +310,6 @@ const Admin = () => {
             <TabsTrigger value="settings">{t('admin.settings.title')}</TabsTrigger>
           </TabsList>
 
-          {/* Orders Tab */}
-          <TabsContent value="orders">
-            <h2 className="heading-1" style={{ marginBottom: '24px' }}>{t('admin.orders.pending')}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {orders.map((order) => (
-                <div key={order.id} style={{
-                  background: 'var(--bg-secondary)',
-                  border: '1px solid var(--border-subtle)',
-                  padding: '24px'
-                }}>
-                  <div style={{ marginBottom: '16px' }}>
-                    <p className="body-medium">{t('admin.orders.file')}: <span style={{ color: 'var(--text-primary)' }}>{order.fileName}</span></p>
-                    <p className="body-medium">{t('admin.orders.material')}: <span style={{ color: 'var(--text-primary)' }}>{order.material}</span></p>
-                    <p className="body-medium">{language === 'ru' ? 'Вес' : 'Greutate'}: <span style={{ color: 'var(--text-primary)' }}>{order.weight}g</span></p>
-                    <p className="body-medium">{language === 'ru' ? 'Время' : 'Timp'}: <span style={{ color: 'var(--text-primary)' }}>{order.printTime}</span></p>
-                    <p className="heading-2" style={{ color: 'var(--brand-primary)', marginTop: '8px' }}>
-                      {t('admin.orders.cost')}: {order.calculatedCost} {language === 'ru' ? 'лей' : 'lei'}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <Button className="btn-primary" onClick={() => handleApproveOrder(order.id)}>{t('admin.orders.approve')}</Button>
-                    <Button className="btn-secondary">{t('admin.orders.edit')}</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-
           {/* Materials Tab */}
           <TabsContent value="materials">
             <div style={{
