@@ -1,0 +1,9 @@
+solid test
+    facet normal 0 0 1
+      outer loop
+        vertex 0 0 0
+        vertex 100 0 0
+        vertex 50 100 50
+      endloop
+    endfacet
+    endsolid test
