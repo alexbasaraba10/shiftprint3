@@ -1,58 +1,53 @@
 export const mockMaterials = [
   {
-    id: 1,
-    name: 'PLA Чёрный',
-    nameRo: 'PLA Negru',
-    color: 'Чёрный',
-    colorRo: 'Negru',
+    id: 'pla',
+    name: 'PLA',
+    nameRo: 'PLA',
     type: 'PLA',
     price: 180,
     description: 'Идеален для декоративных изделий, прототипов. Экологически чистый, простой в печати.',
-    descriptionRo: 'Ideal pentru obiecte decorative, prototipuri. Ecologic, ușor de imprimat.'
+    descriptionRo: 'Ideal pentru obiecte decorative, prototipuri. Ecologic, ușor de imprimat.',
+    colors: ['Белый', 'Чёрный', 'Красный', 'Синий', 'Зелёный', 'Жёлтый', 'Оранжевый', 'Серый']
   },
   {
-    id: 2,
-    name: 'PETG Прозрачный',
-    nameRo: 'PETG Transparent',
-    color: 'Прозрачный',
-    colorRo: 'Transparent',
+    id: 'petg',
+    name: 'PETG',
+    nameRo: 'PETG',
     type: 'PETG',
     price: 220,
     description: 'Прочный материал для функциональных деталей. Устойчив к влаге и ударам.',
-    descriptionRo: 'Material rezistent pentru piese funcționale. Rezistent la umiditate și impact.'
+    descriptionRo: 'Material rezistent pentru piese funcționale. Rezistent la umiditate și impact.',
+    colors: ['Прозрачный', 'Чёрный', 'Белый', 'Синий', 'Зелёный']
   },
   {
-    id: 3,
-    name: 'ABS Белый',
-    nameRo: 'ABS Alb',
-    color: 'Белый',
-    colorRo: 'Alb',
+    id: 'abs',
+    name: 'ABS',
+    nameRo: 'ABS',
     type: 'ABS',
     price: 200,
     description: 'Термостойкий, прочный. Подходит для деталей, работающих при высоких температурах.',
-    descriptionRo: 'Termo-rezistent, durabil. Potrivit pentru piese care funcționează la temperaturi înalte.'
+    descriptionRo: 'Termo-rezistent, durabil. Potrivit pentru piese care funcționează la temperaturi înalte.',
+    colors: ['Белый', 'Чёрный', 'Серый', 'Красный']
   },
   {
-    id: 4,
-    name: 'PETG Чёрный',
-    nameRo: 'PETG Negru',
-    color: 'Чёрный',
-    colorRo: 'Negru',
-    type: 'PETG',
-    price: 220,
-    description: 'Идеальное сочетание прочности и внешнего вида. Для механических деталей.',
-    descriptionRo: 'Combinație perfectă de rezistență și aspect. Pentru piese mecanice.'
-  },
-  {
-    id: 5,
-    name: 'TPU Гибкий',
-    nameRo: 'TPU Flexibil',
-    color: 'Чёрный',
-    colorRo: 'Negru',
+    id: 'tpu',
+    name: 'TPU',
+    nameRo: 'TPU',
     type: 'TPU',
     price: 350,
     description: 'Гибкий эластичный материал. Для чехлов, прокладок, амортизаторов.',
-    descriptionRo: 'Material flexibil elastic. Pentru huse, garnituri, amortizoare.'
+    descriptionRo: 'Material flexibil elastic. Pentru huse, garnituri, amortizoare.',
+    colors: ['Чёрный', 'Белый', 'Прозрачный']
+  },
+  {
+    id: 'nylon',
+    name: 'Nylon',
+    nameRo: 'Nylon',
+    type: 'Nylon',
+    price: 450,
+    description: 'Высокопрочный материал для механических деталей. Износостойкий.',
+    descriptionRo: 'Material de înaltă rezistență pentru piese mecanice. Rezistent la uzură.',
+    colors: ['Натуральный', 'Чёрный', 'Белый']
   }
 ];
 
@@ -111,7 +106,8 @@ export const mockOrders = [
   {
     id: 1,
     fileName: 'bracket_v2.stl',
-    material: 'PETG Чёрный',
+    material: 'PETG',
+    color: 'Чёрный',
     weight: 45.5,
     printTime: '3ч 25мин',
     calculatedCost: 135,
@@ -121,7 +117,8 @@ export const mockOrders = [
   {
     id: 2,
     fileName: 'phone_case.obj',
-    material: 'TPU Гибкий',
+    material: 'TPU',
+    color: 'Чёрный',
     weight: 28.0,
     printTime: '2ч 10мин',
     calculatedCost: 245,
