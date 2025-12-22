@@ -321,10 +321,39 @@ const Calculator = () => {
                   border: '1px solid var(--border-subtle)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                    {/* Reset Button */}
+                    <button
+                      onClick={resetScale}
+                      title={language === 'ru' ? 'Сбросить масштаб' : 'Resetează scala'}
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        border: '2px solid var(--border-medium)',
+                        background: scale !== 1 ? 'var(--brand-hover)' : 'var(--bg-primary)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease',
+                        opacity: scale !== 1 ? 1 : 0.5
+                      }}
+                    >
+                      <RotateCcw size={18} color={scale !== 1 ? 'var(--brand-primary)' : 'var(--text-muted)'} />
+                    </button>
                     <Maximize2 size={18} color="var(--brand-primary)" />
                     <h4 style={{ fontWeight: 600, margin: 0 }}>
                       {language === 'ru' ? 'Масштаб' : 'Scală'}: {(scale * 100).toFixed(0)}%
                     </h4>
+                    {scale !== 1 && (
+                      <span style={{
+                        fontSize: '12px',
+                        color: 'var(--text-muted)',
+                        marginLeft: 'auto'
+                      }}>
+                        {language === 'ru' ? '(изменён)' : '(modificat)'}
+                      </span>
+                    )}
                   </div>
                   
                   {/* Main Scale Slider */}
@@ -362,15 +391,31 @@ const Calculator = () => {
                           type="number"
                           value={customDimensions[axis]}
                           onChange={(e) => handleDimensionInput(axis, e.target.value)}
+                          onBlur={(e) => {
+                            // On blur, format the value properly
+                            const numValue = parseFloat(e.target.value);
+                            if (!isNaN(numValue) && numValue > 0) {
+                              setCustomDimensions(prev => ({
+                                ...prev,
+                                [axis]: (dimensions[axis] * scale).toFixed(1)
+                              }));
+                            }
+                          }}
                           style={{
                             width: '100%',
-                            padding: '8px',
+                            padding: '10px 8px',
                             borderRadius: '8px',
-                            border: '1px solid var(--border-medium)',
+                            border: '2px solid var(--border-medium)',
                             background: 'var(--bg-primary)',
                             textAlign: 'center',
-                            fontSize: '14px',
-                            fontFamily: 'monospace'
+                            fontSize: '16px',
+                            fontFamily: 'monospace',
+                            fontWeight: 600,
+                            transition: 'border-color 0.2s ease'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = axis === 'x' ? '#ef4444' : axis === 'y' ? '#22c55e' : '#3b82f6';
+                            e.target.select();
                           }}
                         />
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>mm</span>
