@@ -147,15 +147,18 @@ backend:
         
   - task: "Telegram Notifications"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/api_routes.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Telegram API calls work but some messages return 400 Bad Request"
+      - working: true
+        agent: "main"
+        comment: "Fixed tel: URL issue. All Telegram calls now return HTTP 200 OK"
         
   - task: "Telegram Webhook Handler"
     implemented: true
