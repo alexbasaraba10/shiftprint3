@@ -475,6 +475,97 @@ async def get_order_status(order_id: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# Confirm order with customer data
+class ConfirmOrderData(BaseModel):
+    customerName: str
+    customerPhone: str
+    customerEmail: Optional[str] = None
+    authMethod: Optional[str] = None
+    finalCost: Optional[float] = None
+
+@router.post("/api/orders/{order_id}/confirm")
+async def confirm_order_with_customer(order_id: str, data: ConfirmOrderData):
+    """Add customer info to order and send notification"""
+    try:
+        # Update order with customer data
+        await db.orders.update_one(
+            {"_id": ObjectId(order_id)},
+            {"$set": {
+                "customerName": data.customerName,
+                "customerPhone": data.customerPhone,
+                "customerEmail": data.customerEmail,
+                "authMethod": data.authMethod,
+                "finalCost": data.finalCost,
+                "status": "ordered",
+                "orderedDate": datetime.utcnow()
+            }}
+        )
+        
+        # Get order info
+        order = await db.orders.find_one({"_id": ObjectId(order_id)})
+        
+        # Calculate discount for Google users
+        discount = 0
+        if data.authMethod == 'google' and data.customerEmail:
+            # Count completed orders for this email
+            completed_orders = await db.orders.count_documents({
+                "customerEmail": data.customerEmail,
+                "status": "completed"
+            })
+            discount = min(completed_orders * 5, 25)  # 5% per order, max 25%
+        
+        # Send Telegram notification with customer info
+        try:
+            import telegram
+            from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+            
+            TELEGRAM_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+            TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+            
+            if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
+                bot = telegram.Bot(token=TELEGRAM_TOKEN)
+                
+                message = f"""🎉 <b>ЗАКАЗ ОФОРМЛЕН #{order_id[-8:]}</b>
+
+📄 <b>Файл:</b> {order.get('fileName', 'N/A')}
+🎨 <b>Материал:</b> {order.get('materialName', 'Выбор оператора')}
+💰 <b>Цена:</b> {data.finalCost or order.get('estimatedCost', 'N/A')} MDL
+
+━━━━━━━━━━━━━━━━━━
+👤 <b>КЛИЕНТ:</b>
+📝 Имя: <b>{data.customerName}</b>
+📞 Телефон: <code>{data.customerPhone}</code>
+"""
+                if data.customerEmail:
+                    message += f"📧 Email: {data.customerEmail}\n"
+                
+                if data.authMethod == 'google':
+                    message += f"\n🔐 Авторизация: Google\n"
+                    if discount > 0:
+                        message += f"🎁 <b>Скидка клиента: {discount}%</b>\n"
+                
+                message += f"\n📅 {datetime.now().strftime('%d.%m.%Y %H:%M')}"
+                
+                # Keyboard with call button and complete button
+                keyboard = [
+                    [InlineKeyboardButton(f"📞 Позвонить {data.customerPhone}", url=f"tel:{data.customerPhone}")],
+                    [InlineKeyboardButton("✅ Выполнен", callback_data=f"complete_{order_id}")]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                
+                await bot.send_message(
+                    chat_id=TELEGRAM_CHAT_ID,
+                    text=message,
+                    parse_mode='HTML',
+                    reply_markup=reply_markup
+                )
+        except Exception as e:
+            print(f"Telegram error: {e}")
+        
+        return {"success": True, "message": "Order confirmed"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 # ============ TELEGRAM WEBHOOK ============
 class TelegramUpdate(BaseModel):
     update_id: int
