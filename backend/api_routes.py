@@ -834,3 +834,48 @@ async def calculate_cost(request: CalculateCostRequest):
         totalCost=round(total_cost, 2),
         currency="Lei"
     )
+
+
+# ============ USER DISCOUNT SYSTEM ============
+@router.get("/api/user/discount/{email}")
+async def get_user_discount(email: str):
+    """Get user's discount based on completed orders"""
+    try:
+        # Count completed orders for this email
+        completed_orders = await db.orders.count_documents({
+            "customerEmail": email,
+            "status": "completed"
+        })
+        
+        # Calculate discount: 5% per completed order, max 25%
+        discount_percent = min(completed_orders * 5, 25)
+        
+        return {
+            "email": email,
+            "completedOrders": completed_orders,
+            "discountPercent": discount_percent,
+            "maxDiscount": 25
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/api/user/orders/{email}")
+async def get_user_orders(email: str):
+    """Get user's order history"""
+    try:
+        orders = await db.orders.find({
+            "customerEmail": email
+        }).sort("uploadDate", -1).to_list(50)
+        
+        return [{
+            "orderId": str(o['_id']),
+            "fileName": o.get('fileName'),
+            "materialName": o.get('materialName'),
+            "status": o.get('status'),
+            "estimatedCost": o.get('estimatedCost'),
+            "finalCost": o.get('finalCost'),
+            "uploadDate": o.get('uploadDate').isoformat() if o.get('uploadDate') else None,
+            "completedDate": o.get('completedDate').isoformat() if o.get('completedDate') else None
+        } for o in orders]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
