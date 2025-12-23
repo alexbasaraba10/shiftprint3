@@ -676,28 +676,42 @@ const Calculator = () => {
                     alignItems: 'center', 
                     gap: '16px',
                     padding: '16px 20px', 
-                    background: 'var(--bg-secondary)', 
+                    background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', 
                     borderRadius: '14px', 
-                    border: '1px solid var(--border-subtle)'
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
                   }}>
-                    {/* Mini 3D printer animation */}
+                    {/* Realistic mini 3D printer animation */}
                     <div style={{ flexShrink: 0 }}>
-                      <div className="mini-3d-printer">
-                        <div className="mini-frame">
-                          <div className="mini-head"></div>
-                          <div className="mini-bed"></div>
-                          <div className="mini-object"></div>
+                      <div className="realistic-printer">
+                        <div className="printer-frame">
+                          <div className="printer-rod left-rod"></div>
+                          <div className="printer-rod right-rod"></div>
+                          <div className="printer-gantry">
+                            <div className="print-head">
+                              <div className="nozzle-tip"></div>
+                            </div>
+                          </div>
+                          <div className="print-bed">
+                            <div className="printing-object"></div>
+                          </div>
+                          <div className="printer-lcd">
+                            <div className="lcd-bar"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px', color: 'var(--text-primary)' }}>
-                        {language === 'ru' ? 'Ожидание подтверждения...' : 'Așteptare confirmare...'}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px', color: '#1e293b' }}>
+                        {language === 'ru' ? '⏳ Ожидание подтверждения' : '⏳ Așteptare confirmare'}
                       </h4>
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
-                        {language === 'ru' ? 'Оператор проверяет модель' : 'Operatorul verifică modelul'}
+                      <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>
+                        {language === 'ru' ? 'Оператор проверяет вашу модель' : 'Operatorul verifică modelul dvs.'}
                       </p>
                     </div>
+                    <div className="pulse-indicator"></div>
+                  </div>
+                )}
                     <Loader2 className="animate-spin" size={24} color="var(--brand-primary)" />
                   </div>
                 )}
