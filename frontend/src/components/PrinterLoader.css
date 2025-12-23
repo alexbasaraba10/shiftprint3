@@ -76,209 +76,283 @@
 }
 
 /* ============================================
-   PRINTER ILLUSTRATION
+   3D PRINTER ILLUSTRATION
    ============================================ */
-.printer-illustration {
+.printer-3d-illustration {
   position: relative;
-  width: 160px;
-  height: 120px;
+  width: 140px;
+  height: 160px;
 }
 
-.printer-small .printer-illustration {
-  width: 80px;
-  height: 60px;
+.printer-small .printer-3d-illustration {
+  width: 70px;
+  height: 80px;
 }
 
-.printer-large .printer-illustration {
-  width: 200px;
-  height: 150px;
+.printer-large .printer-3d-illustration {
+  width: 180px;
+  height: 200px;
 }
 
-.printer-body {
+.printer-3d-body {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* Paper output area */
-.paper-output-area {
+/* Frame Pillars */
+.frame-pillar {
   position: absolute;
-  top: 8%;
-  left: 20%;
-  width: 60%;
-  height: 8px;
-  background: #222;
+  width: 8px;
+  height: 70%;
+  background: linear-gradient(180deg, #4a4a4a 0%, #2d2d2d 100%);
   border-radius: 2px;
-  overflow: visible;
-  z-index: 10;
+  top: 10%;
 }
 
-.paper-coming-out {
-  position: absolute;
-  top: -60px;
+.frame-pillar.left {
   left: 10%;
-  width: 80%;
-  background: white;
+}
+
+.frame-pillar.right {
+  right: 10%;
+}
+
+/* Top Bar */
+.top-bar {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  height: 10px;
+  background: linear-gradient(90deg, #3d3d3d 0%, #4a4a4a 50%, #3d3d3d 100%);
   border-radius: 3px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-  padding: 10px 8px;
-  animation: paperSlide 2.5s ease-in-out infinite;
-  transform-origin: bottom center;
 }
 
-.printed-text-line {
-  height: 4px;
-  background: linear-gradient(90deg, #0071E3, #00C7BE);
+.z-motor {
+  position: absolute;
+  right: -5px;
+  top: -3px;
+  width: 16px;
+  height: 16px;
+  background: #2a2a2a;
   border-radius: 2px;
-  margin-bottom: 5px;
-  animation: lineReveal 2.5s ease-in-out infinite;
-  transform-origin: left;
 }
 
-.printed-text-line.short {
-  width: 60%;
-  animation-delay: 0.3s;
-}
-
-.printed-text-line.medium {
-  width: 80%;
-  animation-delay: 0.5s;
-}
-
-@keyframes paperSlide {
-  0%, 10% {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  30% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  70% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  90%, 100% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-}
-
-@keyframes lineReveal {
-  0%, 20% {
-    transform: scaleX(0);
-  }
-  40%, 80% {
-    transform: scaleX(1);
-  }
-  100% {
-    transform: scaleX(1);
-  }
-}
-
-/* Printer top section */
-.printer-top-section {
+/* X-Carriage (moving print head) */
+.x-carriage {
   position: absolute;
-  top: 15%;
-  left: 10%;
-  width: 80%;
-  height: 25%;
-  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-  border-radius: 8px 8px 0 0;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  top: 22%;
+  left: 20%;
+  width: 35%;
+  height: 20px;
+  background: linear-gradient(180deg, #555 0%, #3a3a3a 100%);
+  border-radius: 4px;
+  animation: moveX 2s ease-in-out infinite;
+  z-index: 5;
 }
 
-.paper-input-tray {
+@keyframes moveX {
+  0%, 100% { left: 20%; }
+  50% { left: 50%; }
+}
+
+.extruder {
   position: absolute;
-  top: 5px;
-  left: 15%;
-  width: 70%;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 20px;
+  background: linear-gradient(180deg, #666 0%, #444 100%);
+  border-radius: 3px 3px 6px 6px;
+}
+
+.nozzle {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
   height: 8px;
-  background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
-  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #888 0%, #c9a227 100%);
+  border-radius: 0 0 2px 2px;
 }
 
-/* Main printer body */
-.printer-main {
+.filament-drip {
   position: absolute;
-  top: 35%;
-  left: 5%;
-  width: 90%;
-  height: 45%;
-  background: linear-gradient(180deg, #454545 0%, #2d2d2d 100%);
-  border-radius: 6px;
-  box-shadow: 
-    0 6px 20px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 0;
+  background: linear-gradient(180deg, #00C7BE 0%, #0071E3 100%);
+  border-radius: 0 0 2px 2px;
+  animation: drip 0.8s ease-in-out infinite;
 }
 
-.printer-display-panel {
+@keyframes drip {
+  0%, 100% { height: 0; opacity: 0; }
+  30%, 70% { height: 10px; opacity: 1; }
+}
+
+/* Build Plate */
+.build-plate {
   position: absolute;
-  top: 20%;
-  left: 10%;
+  bottom: 22%;
+  left: 15%;
+  right: 15%;
+  height: 8px;
+  background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: buildPlateMove 3s ease-in-out infinite;
+}
+
+@keyframes buildPlateMove {
+  0%, 100% { bottom: 22%; }
+  50% { bottom: 35%; }
+}
+
+/* Printed Object */
+.printed-object {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  flex-direction: column-reverse;
   align-items: center;
 }
 
-.status-led {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #555;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+.layer {
+  width: 24px;
+  height: 4px;
+  background: linear-gradient(90deg, #0071E3 0%, #00C7BE 100%);
+  border-radius: 1px;
+  margin-bottom: 1px;
+  animation: layerGrow 3s ease-in-out infinite;
+  opacity: 0;
+  transform: scaleX(0);
 }
 
-.status-led.active {
+.layer-1 { animation-delay: 0s; width: 28px; }
+.layer-2 { animation-delay: 0.5s; width: 24px; }
+.layer-3 { animation-delay: 1s; width: 20px; }
+.layer-4 { animation-delay: 1.5s; width: 16px; }
+
+@keyframes layerGrow {
+  0%, 10% { opacity: 0; transform: scaleX(0); }
+  20%, 80% { opacity: 1; transform: scaleX(1); }
+  90%, 100% { opacity: 0; transform: scaleX(0); }
+}
+
+/* Printer Base */
+.printer-3d-base {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  height: 20%;
+  background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.control-box {
+  position: absolute;
+  bottom: 5px;
+  left: 10%;
+  width: 50%;
+  height: 60%;
+  background: #222;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  gap: 6px;
+}
+
+.lcd-screen {
+  flex: 1;
+  height: 80%;
+  background: linear-gradient(180deg, #1a3a4a 0%, #0d2030 100%);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lcd-screen::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
   background: #00C7BE;
-  box-shadow: 
-    0 0 8px #00C7BE,
-    0 0 16px rgba(0, 199, 190, 0.5);
+  animation: lcdLine 1.5s ease-in-out infinite;
+}
+
+@keyframes lcdLine {
+  0%, 100% { opacity: 0.3; width: 30%; }
+  50% { opacity: 1; width: 80%; }
+}
+
+.status-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00C7BE;
+  box-shadow: 0 0 6px #00C7BE;
   animation: ledPulse 1s ease-in-out infinite;
 }
 
 @keyframes ledPulse {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 
-      0 0 8px #00C7BE,
-      0 0 16px rgba(0, 199, 190, 0.5);
-  }
-  50% {
-    opacity: 0.6;
-    box-shadow: 
-      0 0 4px #00C7BE,
-      0 0 8px rgba(0, 199, 190, 0.3);
-  }
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #00C7BE; }
+  50% { opacity: 0.5; box-shadow: 0 0 3px #00C7BE; }
 }
 
-.printer-vent-lines {
+/* Filament Holder */
+.filament-holder {
   position: absolute;
-  right: 15%;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  top: 5%;
+  right: -15%;
 }
 
-.printer-vent-lines span {
+.spool {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #0071E3 0%, #00C7BE 100%);
+  border-radius: 50%;
+  position: relative;
+  animation: spoolRotate 3s linear infinite;
+}
+
+.spool-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+@keyframes spoolRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.filament-line {
+  position: absolute;
+  top: 10px;
+  left: 0;
   width: 30px;
   height: 2px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 1px;
-}
-
-/* Output tray */
-.printer-output-tray {
-  position: absolute;
-  bottom: 0;
-  left: 15%;
-  width: 70%;
-  height: 12%;
-  background: linear-gradient(180deg, #3d3d3d 0%, #333 100%);
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(90deg, #0071E3, transparent);
+  transform-origin: left;
+  transform: rotate(30deg);
 }
 
 /* ============================================
@@ -319,15 +393,9 @@
 }
 
 @keyframes loadingSlide {
-  0% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(150%);
-  }
-  100% {
-    transform: translateX(350%);
-  }
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(350%); }
 }
 
 .loading-text {
@@ -348,19 +416,4 @@
 @keyframes textFade {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
-}
-
-/* ============================================
-   LEGACY SUPPORT
-   ============================================ */
-.loader-text {
-  margin-top: 16px;
-  font-size: 14px;
-  color: var(--text-secondary);
-  animation: textFade 1.5s ease-in-out infinite;
-}
-
-.printer-small .loader-text {
-  font-size: 11px;
-  margin-top: 8px;
 }
