@@ -374,15 +374,36 @@ async def upload_file(
                 base_cost = plastic_cost + electricity_cost + amortization_cost
                 final_price = round(base_cost * MARKUP_COEFFICIENT)
             
+            # Use client-side calculated price if provided (more accurate with infill)
+            display_price = final_price
+            display_weight = round(calculated_weight, 2) if calculated_weight else 0
+            display_time = round(print_time_hours, 1) if print_time_hours > 0 else 0
+            
+            if clientPrice:
+                try:
+                    display_price = int(float(clientPrice))
+                except:
+                    pass
+            if clientWeight:
+                try:
+                    display_weight = float(clientWeight)
+                except:
+                    pass
+            if clientTime:
+                try:
+                    display_time = float(clientTime)
+                except:
+                    pass
+            
             message = f"""🔔 <b>Новый заказ #{order_id}</b>
 
 📄 <b>Файл:</b> {file.filename}
 🎨 <b>Материал:</b> {materialName if materialName else 'Выбор оператора'}
 """
-            if calculated_weight:
-                message += f"⚖️ <b>Вес:</b> {round(calculated_weight, 2)}г\n"
-            if print_time_hours > 0:
-                message += f"⏱ <b>Время печати:</b> {round(print_time_hours, 1)}ч ({round(print_time_hours * 60)}мин)\n"
+            if display_weight:
+                message += f"⚖️ <b>Вес:</b> {display_weight}г\n"
+            if display_time > 0:
+                message += f"⏱ <b>Время печати:</b> {display_time}ч ({round(display_time * 60)}мин)\n"
             if infill:
                 message += f"🔳 <b>Заполнение:</b> {infill}%\n"
             if layerHeight:
@@ -403,8 +424,11 @@ async def upload_file(
 ⚡ Электричество: <code>{round(electricity_cost)} MDL</code>
 🔧 Амортизация: <code>{round(amortization_cost)} MDL</code>
 📊 <b>Итого себест.:</b> <code>{round(base_cost)} MDL</code>
-━━━━━━━━━━━━━━━━━━
-💰 <b>ЦЕНА КЛИЕНТУ:</b> <code>{final_price} MDL</code>
+━━━━━━━━━━━━━━━━━━"""
+            
+            # Show the price that client sees on the website
+            message += f"""
+💰 <b>ЦЕНА НА САЙТЕ:</b> <code>{display_price} MDL</code>
 """
             
             # Customer info
