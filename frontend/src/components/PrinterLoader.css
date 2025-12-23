@@ -1,0 +1,325 @@
+.printer-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.printer-3d {
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+
+.printer-small .printer-3d {
+  width: 40px;
+  height: 40px;
+}
+
+.printer-large .printer-3d {
+  width: 180px;
+  height: 180px;
+}
+
+/* Printer frame */
+.printer-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 8px;
+  border: 2px solid #0ea5e9;
+  box-shadow: 
+    0 0 20px rgba(14, 165, 233, 0.3),
+    inset 0 0 20px rgba(14, 165, 233, 0.1);
+  overflow: hidden;
+}
+
+.printer-small .printer-frame {
+  border-radius: 4px;
+  border-width: 1px;
+}
+
+/* Top bar */
+.printer-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 15%;
+  background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.printer-logo {
+  width: 30%;
+  height: 40%;
+  background: white;
+  border-radius: 2px;
+  opacity: 0.9;
+}
+
+/* Print bed */
+.print-bed {
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  height: 8%;
+  background: linear-gradient(90deg, #374151, #4b5563);
+  border-radius: 2px;
+}
+
+.bed-surface {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 10%,
+    rgba(255,255,255,0.1) 10%,
+    rgba(255,255,255,0.1) 11%
+  );
+}
+
+/* Print head */
+.print-head {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: printHeadMove 2s ease-in-out infinite;
+}
+
+.extruder {
+  width: 20px;
+  height: 25px;
+  background: linear-gradient(180deg, #6366f1, #4f46e5);
+  border-radius: 3px 3px 0 0;
+  position: relative;
+}
+
+.printer-small .extruder {
+  width: 8px;
+  height: 10px;
+}
+
+.nozzle {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #f59e0b;
+  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5));
+}
+
+.printer-small .nozzle {
+  border-left-width: 3px;
+  border-right-width: 3px;
+  border-top-width: 5px;
+  bottom: -4px;
+}
+
+/* Printed object - layers animating */
+.printed-object {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.layer {
+  height: 6px;
+  background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleY(0);
+  animation: layerPrint 2.5s ease-out infinite;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.4);
+}
+
+.printer-small .layer {
+  height: 2px;
+}
+
+.layer-1 {
+  width: 100%;
+  animation-delay: 0s;
+}
+
+.layer-2 {
+  width: 90%;
+  animation-delay: 0.4s;
+}
+
+.layer-3 {
+  width: 80%;
+  animation-delay: 0.8s;
+}
+
+.layer-4 {
+  width: 70%;
+  animation-delay: 1.2s;
+}
+
+.layer-5 {
+  width: 60%;
+  animation-delay: 1.6s;
+}
+
+/* Filament spool */
+.filament-spool {
+  position: absolute;
+  top: 25%;
+  right: 8%;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #0ea5e9;
+  border-radius: 50%;
+  animation: spoolSpin 1s linear infinite;
+}
+
+.printer-small .filament-spool {
+  width: 8px;
+  height: 8px;
+  border-width: 1px;
+  top: 30%;
+  right: 10%;
+}
+
+.spool-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: #0ea5e9;
+  border-radius: 50%;
+}
+
+.printer-small .spool-center {
+  width: 2px;
+  height: 2px;
+}
+
+/* Filament line */
+.filament-line {
+  position: absolute;
+  top: 34%;
+  right: 17%;
+  width: 25%;
+  height: 2px;
+  background: linear-gradient(90deg, #0ea5e9, transparent);
+  transform-origin: right center;
+  animation: filamentFlow 0.5s ease-in-out infinite;
+}
+
+.printer-small .filament-line {
+  height: 1px;
+}
+
+/* Animations */
+@keyframes printHeadMove {
+  0%, 100% {
+    left: 30%;
+  }
+  50% {
+    left: 70%;
+  }
+}
+
+@keyframes layerPrint {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes spoolSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes filamentFlow {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Loader text */
+.loader-text {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  animation: textPulse 1.5s ease-in-out infinite;
+}
+
+.printer-small .loader-text {
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Glow effect */
+.printer-frame::after {
+  content: '';
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(ellipse, rgba(14, 165, 233, 0.3) 0%, transparent 70%);
+  animation: glowPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.2);
+  }
+}
