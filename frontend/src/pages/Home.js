@@ -114,26 +114,13 @@ const Home = () => {
         marginBottom: '120px'
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: '1000px',
           margin: '0 auto',
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
           gap: '48px',
           textAlign: 'center'
         }}>
-          <div>
-            <div style={{ 
-              fontSize: '56px',
-              fontWeight: 700,
-              background: 'var(--brand-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginBottom: '8px'
-            }}>500+</div>
-            <p style={{ fontSize: '19px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-              {language === 'ru' ? 'Выполненных проектов' : 'Proiecte finalizate'}
-            </p>
-          </div>
           <div>
             <div style={{ 
               fontSize: '56px',
@@ -155,22 +142,22 @@ const Home = () => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               marginBottom: '8px'
-            }}>15+</div>
+            }}>3</div>
             <p style={{ fontSize: '19px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-              {language === 'ru' ? 'Типов материалов' : 'Tipuri de materiale'}
+              {language === 'ru' ? 'Дня на печать' : 'Zile pentru printare'}
             </p>
           </div>
           <div>
             <div style={{ 
-              fontSize: '56px',
+              fontSize: '48px',
               fontWeight: 700,
               background: 'var(--brand-gradient)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               marginBottom: '8px'
-            }}>98%</div>
+            }}>🚚</div>
             <p style={{ fontSize: '19px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-              {language === 'ru' ? 'Довольных клиентов' : 'Clienți mulțumiți'}
+              {language === 'ru' ? 'Доставка по Кишинёву и в Бельцы' : 'Livrare în Chișinău și Bălți'}
             </p>
           </div>
         </div>
