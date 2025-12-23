@@ -72,9 +72,62 @@ const Profile = () => {
     navigate('/calculator', { state: { repeatOrder: order } });
   };
 
-  const handleAuthSuccess = (userData) => {
-    setUser(userData);
-    loadOrders();
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      
+      const result = await signInWithPopup(auth, provider);
+      const googleUser = result.user;
+      
+      const displayName = googleUser.displayName || '';
+      const nameParts = displayName.split(' ');
+      
+      const userData = {
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        email: googleUser.email || '',
+        phone: localStorage.getItem('userPhone') || '',
+        authMethod: 'google',
+        googleId: googleUser.uid,
+        photoURL: googleUser.photoURL,
+        createdAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('userEmail', googleUser.email || '');
+      setUser(userData);
+      
+      // Load discount for this user
+      if (userData.email) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/discount/${encodeURIComponent(userData.email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setDiscount(data.discountPercent);
+          }
+        } catch (e) {
+          console.error('Error loading discount:', e);
+        }
+      }
+      
+      toast.success(language === 'ru' ? 'Вход выполнен успешно!' : 'Autentificare reușită!');
+      loadOrders();
+    } catch (error) {
+      console.error('Google auth error:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        // User closed popup
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error(language === 'ru' 
+          ? 'Домен не авторизован в Firebase' 
+          : 'Domeniul nu este autorizat în Firebase');
+      } else {
+        toast.error(language === 'ru' ? 'Ошибка входа через Google' : 'Eroare autentificare Google');
+      }
+    }
+    setGoogleLoading(false);
   };
 
   const handleAdminLogin = async () => {
