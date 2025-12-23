@@ -266,7 +266,7 @@ async def upload_file(
             calculated_time = (stl_props['volume_cm3'] * 5) / 60  # Convert to hours
             
             # Calculate cost if we have material
-            if materialId:
+            if materialId and material:
                 settings = await db.print_settings.find_one()
                 if not settings:
                     settings = {
@@ -277,7 +277,7 @@ async def upload_file(
                     }
                 
                 weight_kg = calculated_weight / 1000
-                material_cost = weight_kg * material['price']
+                material_cost = weight_kg * material.get('price', 290)
                 electricity_cost = calculated_time * settings['printerPower'] * settings['electricityCost']
                 labor_cost = calculated_time * settings['laborCost']
                 
