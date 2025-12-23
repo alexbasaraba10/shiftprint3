@@ -26,7 +26,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div style={{ background: 'var(--bg-primary)' }}>
+    <div style={{ background: 'var(--bg-primary)' }} className="home-page">
       {/* Hero Section with Video Background */}
       <section style={{
         position: 'relative',
@@ -56,35 +56,47 @@ const Home = () => {
           <source src="https://customer-assets.emergentagent.com/job_f1d7a600-9be3-4269-857f-414a16853032/artifacts/mi7amiy6_lv_0_20251123134625.mp4" type="video/mp4" />
         </video>
 
+        {/* Dark overlay for better text readability */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%)',
+          zIndex: 1
+        }} />
+
         {/* Hero Content */}
         <div style={{
           position: 'relative',
-          zIndex: 1,
+          zIndex: 2,
           textAlign: 'center',
           maxWidth: '1200px',
           padding: '0 20px',
-          marginTop: '10%'
+          marginTop: '5%',
+          animation: 'heroFadeIn 1s ease-out'
         }}>
           <h1 style={{
-            fontSize: 'clamp(48px, 8vw, 80px)',
+            fontSize: 'clamp(42px, 7vw, 72px)',
             fontWeight: 700,
-            lineHeight: 1.05,
-            letterSpacing: '-0.015em',
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em',
             color: 'white',
             marginBottom: '24px',
-            textShadow: '0 2px 20px rgba(0, 0, 0, 0.3)'
+            textShadow: '0 4px 30px rgba(0, 0, 0, 0.5)'
           }}>
             {t('home.hero.title')}
           </h1>
           <p style={{ 
-            fontSize: 'clamp(21px, 3vw, 28px)',
-            lineHeight: 1.4,
+            fontSize: 'clamp(18px, 2.5vw, 24px)',
+            lineHeight: 1.5,
             letterSpacing: '-0.01em',
-            color: 'white',
+            color: 'rgba(255, 255, 255, 0.95)',
             marginBottom: '48px',
             maxWidth: '700px',
             margin: '0 auto 48px',
-            textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+            textShadow: '0 2px 15px rgba(0, 0, 0, 0.4)'
           }}>
             {t('home.hero.subtitle')}
           </p>
@@ -92,19 +104,65 @@ const Home = () => {
             <Button 
               className="btn-primary"
               onClick={() => navigate('/calculator')}
+              style={{
+                animation: 'buttonFadeIn 0.6s ease-out 0.3s both'
+              }}
             >
               {t('home.hero.ctaPrimary')}
             </Button>
             <Button 
               className="btn-secondary"
               onClick={() => navigate('/gallery')}
-              style={{ background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.15)', 
+                backdropFilter: 'blur(10px)', 
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: 'white',
+                animation: 'buttonFadeIn 0.6s ease-out 0.4s both'
+              }}
             >
               {t('home.hero.ctaSecondary')}
             </Button>
           </div>
         </div>
       </section>
+
+      {/* Keyframes for hero animations */}
+      <style>{`
+        @keyframes heroFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes buttonFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .home-page section {
+          animation: sectionSlideIn 0.7s ease-out both;
+        }
+        @keyframes sectionSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       {/* Stats Section - Apple Style */}
       <section style={{ 
