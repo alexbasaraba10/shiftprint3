@@ -3,8 +3,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-  gap: 24px;
+  padding: 30px;
+  gap: 20px;
 }
 
 /* ============================================
@@ -14,12 +14,12 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  height: 60px;
+  height: 50px;
 }
 
 .typing-text {
   display: flex;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   background: linear-gradient(135deg, #0071E3 0%, #00C7BE 100%);
   -webkit-background-clip: text;
@@ -28,46 +28,43 @@
 }
 
 .printer-small .typing-text {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .printer-large .typing-text {
-  font-size: 52px;
+  font-size: 44px;
 }
 
 .typing-char {
   opacity: 0;
-  animation: typeIn 0.15s ease-out forwards;
+  animation: typeIn 0.12s ease-out forwards;
   display: inline-block;
 }
 
 @keyframes typeIn {
   0% {
     opacity: 0;
-    transform: translateY(15px) scale(0.8);
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
 .typing-cursor {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 300;
-  background: linear-gradient(135deg, #0071E3 0%, #00C7BE 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #0071E3;
   animation: cursorBlink 0.7s infinite;
 }
 
 .printer-small .typing-cursor {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .printer-large .typing-cursor {
-  font-size: 52px;
+  font-size: 44px;
 }
 
 @keyframes cursorBlink {
@@ -76,146 +73,114 @@
 }
 
 /* ============================================
-   3D PRINTER ILLUSTRATION
+   3D PRINTER
    ============================================ */
-.printer-3d-illustration {
+.printer-3d-container {
+  width: 120px;
+  height: 130px;
   position: relative;
-  width: 140px;
+}
+
+.printer-small .printer-3d-container {
+  width: 60px;
+  height: 65px;
+}
+
+.printer-large .printer-3d-container {
+  width: 150px;
   height: 160px;
 }
 
-.printer-small .printer-3d-illustration {
-  width: 70px;
-  height: 80px;
-}
-
-.printer-large .printer-3d-illustration {
-  width: 180px;
-  height: 200px;
-}
-
-.printer-3d-body {
-  position: relative;
+.printer-3d {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
-/* Frame Pillars */
-.frame-pillar {
+/* Frame */
+.frame-left, .frame-right {
   position: absolute;
-  width: 8px;
-  height: 70%;
-  background: linear-gradient(180deg, #4a4a4a 0%, #2d2d2d 100%);
+  width: 6px;
+  height: 75%;
+  top: 5%;
+  background: linear-gradient(180deg, #555 0%, #333 100%);
   border-radius: 2px;
-  top: 10%;
 }
 
-.frame-pillar.left {
-  left: 10%;
-}
+.frame-left { left: 8%; }
+.frame-right { right: 8%; }
 
-.frame-pillar.right {
-  right: 10%;
-}
-
-/* Top Bar */
-.top-bar {
+.frame-top {
   position: absolute;
-  top: 10%;
-  left: 10%;
-  right: 10%;
-  height: 10px;
-  background: linear-gradient(90deg, #3d3d3d 0%, #4a4a4a 50%, #3d3d3d 100%);
+  top: 5%;
+  left: 8%;
+  right: 8%;
+  height: 8px;
+  background: linear-gradient(90deg, #444 0%, #555 50%, #444 100%);
   border-radius: 3px;
 }
 
-.z-motor {
+/* Carriage */
+.carriage {
   position: absolute;
-  right: -5px;
-  top: -3px;
-  width: 16px;
-  height: 16px;
-  background: #2a2a2a;
-  border-radius: 2px;
+  top: 12%;
+  left: 15%;
+  right: 15%;
+  height: 14px;
+  background: #4a4a4a;
+  border-radius: 3px;
+  animation: carriageUpDown 3s ease-in-out infinite;
 }
 
-/* X-Carriage (moving print head) */
-.x-carriage {
-  position: absolute;
-  top: 22%;
-  left: 20%;
-  width: 35%;
-  height: 20px;
-  background: linear-gradient(180deg, #555 0%, #3a3a3a 100%);
-  border-radius: 4px;
-  animation: moveX 2s ease-in-out infinite;
-  z-index: 5;
+@keyframes carriageUpDown {
+  0%, 100% { top: 12%; }
+  50% { top: 40%; }
 }
 
-@keyframes moveX {
-  0%, 100% { left: 20%; }
-  50% { left: 50%; }
-}
-
-.extruder {
+.extruder-block {
   position: absolute;
-  bottom: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 18px;
-  height: 20px;
+  width: 20px;
+  height: 18px;
   background: linear-gradient(180deg, #666 0%, #444 100%);
-  border-radius: 3px 3px 6px 6px;
+  border-radius: 3px;
+  top: 10px;
+  animation: extruderMove 2s ease-in-out infinite;
 }
 
-.nozzle {
+@keyframes extruderMove {
+  0%, 100% { left: 10%; }
+  50% { left: calc(100% - 30px); }
+}
+
+.hot-end {
   position: absolute;
-  bottom: -6px;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  height: 8px;
-  background: linear-gradient(180deg, #888 0%, #c9a227 100%);
-  border-radius: 0 0 2px 2px;
+  width: 6px;
+  height: 10px;
+  background: linear-gradient(180deg, #888 0%, #d4a017 100%);
+  border-radius: 0 0 3px 3px;
 }
 
-.filament-drip {
-  position: absolute;
-  bottom: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 0;
-  background: linear-gradient(180deg, #00C7BE 0%, #0071E3 100%);
-  border-radius: 0 0 2px 2px;
-  animation: drip 0.8s ease-in-out infinite;
-}
-
-@keyframes drip {
-  0%, 100% { height: 0; opacity: 0; }
-  30%, 70% { height: 10px; opacity: 1; }
-}
-
-/* Build Plate */
+/* Build plate */
 .build-plate {
   position: absolute;
   bottom: 22%;
-  left: 15%;
-  right: 15%;
-  height: 8px;
-  background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+  left: 12%;
+  right: 12%;
+  height: 6px;
+  background: linear-gradient(180deg, #333 0%, #222 100%);
   border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  animation: buildPlateMove 3s ease-in-out infinite;
+  animation: plateMove 3s ease-in-out infinite;
 }
 
-@keyframes buildPlateMove {
+@keyframes plateMove {
   0%, 100% { bottom: 22%; }
   50% { bottom: 35%; }
 }
 
-/* Printed Object */
-.printed-object {
+.printed-layers {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -226,194 +191,107 @@
 }
 
 .layer {
-  width: 24px;
   height: 4px;
   background: linear-gradient(90deg, #0071E3 0%, #00C7BE 100%);
   border-radius: 1px;
   margin-bottom: 1px;
-  animation: layerGrow 3s ease-in-out infinite;
+  animation: layerAppear 3s ease-in-out infinite;
   opacity: 0;
-  transform: scaleX(0);
 }
 
-.layer-1 { animation-delay: 0s; width: 28px; }
-.layer-2 { animation-delay: 0.5s; width: 24px; }
-.layer-3 { animation-delay: 1s; width: 20px; }
-.layer-4 { animation-delay: 1.5s; width: 16px; }
+.layer:nth-child(1) { width: 30px; animation-delay: 0s; }
+.layer:nth-child(2) { width: 26px; animation-delay: 0.5s; }
+.layer:nth-child(3) { width: 22px; animation-delay: 1s; }
 
-@keyframes layerGrow {
-  0%, 10% { opacity: 0; transform: scaleX(0); }
-  20%, 80% { opacity: 1; transform: scaleX(1); }
-  90%, 100% { opacity: 0; transform: scaleX(0); }
+@keyframes layerAppear {
+  0%, 15% { opacity: 0; transform: scaleX(0); }
+  25%, 75% { opacity: 1; transform: scaleX(1); }
+  85%, 100% { opacity: 0; transform: scaleX(0); }
 }
 
-/* Printer Base */
-.printer-3d-base {
+/* Printer base */
+.printer-base {
   position: absolute;
   bottom: 0;
   left: 5%;
   right: 5%;
   height: 20%;
-  background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+  background: linear-gradient(180deg, #3a3a3a 0%, #252525 100%);
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
-.control-box {
+.lcd-display {
   position: absolute;
-  bottom: 5px;
+  top: 50%;
   left: 10%;
-  width: 50%;
-  height: 60%;
-  background: #222;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  padding: 4px;
-  gap: 6px;
-}
-
-.lcd-screen {
-  flex: 1;
-  height: 80%;
-  background: linear-gradient(180deg, #1a3a4a 0%, #0d2030 100%);
+  transform: translateY(-50%);
+  width: 45%;
+  height: 50%;
+  background: #0a1929;
   border-radius: 2px;
-  position: relative;
   overflow: hidden;
+  padding: 3px;
 }
 
-.lcd-screen::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 10%;
-  width: 80%;
-  height: 2px;
-  background: #00C7BE;
-  animation: lcdLine 1.5s ease-in-out infinite;
+.lcd-progress {
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, #00C7BE, #0071E3);
+  border-radius: 1px;
+  animation: lcdFill 2s ease-in-out infinite;
 }
 
-@keyframes lcdLine {
-  0%, 100% { opacity: 0.3; width: 30%; }
-  50% { opacity: 1; width: 80%; }
-}
-
-.status-led {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #00C7BE;
-  box-shadow: 0 0 6px #00C7BE;
-  animation: ledPulse 1s ease-in-out infinite;
-}
-
-@keyframes ledPulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px #00C7BE; }
-  50% { opacity: 0.5; box-shadow: 0 0 3px #00C7BE; }
-}
-
-/* Filament Holder */
-.filament-holder {
-  position: absolute;
-  top: 5%;
-  right: -15%;
-}
-
-.spool {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #0071E3 0%, #00C7BE 100%);
-  border-radius: 50%;
-  position: relative;
-  animation: spoolRotate 3s linear infinite;
-}
-
-.spool-inner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background: #fff;
-  border-radius: 50%;
-}
-
-@keyframes spoolRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.filament-line {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  width: 30px;
-  height: 2px;
-  background: linear-gradient(90deg, #0071E3, transparent);
-  transform-origin: left;
-  transform: rotate(30deg);
+@keyframes lcdFill {
+  0% { width: 10%; }
+  50% { width: 90%; }
+  100% { width: 10%; }
 }
 
 /* ============================================
-   LOADING INDICATOR
+   LOADING BAR
    ============================================ */
-.loading-indicator {
+.loading-bar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+  width: 100%;
+  max-width: 140px;
 }
 
-.loading-bar {
-  width: 120px;
+.printer-large .loading-bar-container {
+  max-width: 180px;
+}
+
+.loading-bar-bg {
+  width: 100%;
   height: 4px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 2px;
   overflow: hidden;
 }
 
-.printer-large .loading-bar {
-  width: 180px;
-  height: 5px;
-}
-
-.printer-small .loading-bar {
-  width: 80px;
-  height: 3px;
-}
-
-.loading-progress {
-  width: 40%;
+.loading-bar-fill {
   height: 100%;
+  width: 30%;
   background: linear-gradient(90deg, #0071E3, #00C7BE);
   border-radius: 2px;
-  animation: loadingSlide 1.5s ease-in-out infinite;
+  animation: barSlide 1.5s ease-in-out infinite;
 }
 
-@keyframes loadingSlide {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(150%); }
-  100% { transform: translateX(350%); }
+@keyframes barSlide {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { transform: translateX(100%); width: 60%; }
+  100% { transform: translateX(300%); width: 40%; }
 }
 
-.loading-text {
-  font-size: 13px;
+.loading-text-small {
+  font-size: 12px;
   color: #86868B;
   font-weight: 500;
-  animation: textFade 1.5s ease-in-out infinite;
 }
 
-.printer-small .loading-text {
-  font-size: 11px;
-}
-
-.printer-large .loading-text {
-  font-size: 15px;
-}
-
-@keyframes textFade {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.printer-small .loading-text-small {
+  font-size: 10px;
 }
