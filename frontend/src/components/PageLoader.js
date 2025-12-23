@@ -1,33 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PrinterLoader from './PrinterLoader';
-import { useLanguage } from '../context/LanguageContext';
 
-const PageLoader = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const { language } = useLanguage();
-
-  useEffect(() => {
-    // Check if page already loaded
-    if (document.readyState === 'complete') {
-      setTimeout(() => setIsLoading(false), 500);
-    } else {
-      const handleLoad = () => {
-        setTimeout(() => setIsLoading(false), 500);
-      };
-      window.addEventListener('load', handleLoad);
-      
-      // Fallback timeout
-      const timeout = setTimeout(() => setIsLoading(false), 3000);
-      
-      return () => {
-        window.removeEventListener('load', handleLoad);
-        clearTimeout(timeout);
-      };
-    }
-  }, []);
-
+const PageLoader = ({ isLoading }) => {
   if (!isLoading) return null;
-
+  
   return (
     <div style={{
       position: 'fixed',
@@ -35,17 +11,23 @@ const PageLoader = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'var(--bg-primary)',
+      background: 'rgba(255, 255, 255, 0.85)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 9999,
-      animation: isLoading ? 'none' : 'fadeOut 0.5s ease-out forwards'
+      animation: 'fadeInLoader 0.2s ease-out'
     }}>
-      <PrinterLoader 
-        size="large" 
-        text={language === 'ru' ? 'Загрузка...' : 'Se încarcă...'} 
-      />
+      <PrinterLoader size="medium" text="ShiftPrint" />
+      
+      <style>{`
+        @keyframes fadeInLoader {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };
