@@ -19,41 +19,50 @@ import PrinterLoader from "./components/PrinterLoader";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     // Initial page load animation
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
+    const fadeTimer = setTimeout(() => setFadeOut(true), 1800);
+    const loadTimer = setTimeout(() => setIsLoading(false), 2300);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(loadTimer);
+    };
   }, []);
-
-  if (isLoading) {
-    return (
-      <LanguageProvider>
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <PrinterLoader size="large" text="ShiftPrint" />
-        </div>
-      </LanguageProvider>
-    );
-  }
 
   return (
     <LanguageProvider>
+      {/* Полупрозрачный загрузочный экран */}
+      {isLoading && (
+        <div 
+          className="loading-overlay"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            opacity: fadeOut ? 0 : 1,
+            transition: 'opacity 0.5s ease-out'
+          }}
+        >
+          <PrinterLoader size="large" text="ShiftPrint" />
+        </div>
+      )}
+      
       <BrowserRouter>
         <ScrollToTop />
-        <div className="App">
+        <div className="App page-transition">
           <AppleHeader />
-          <div style={{ paddingTop: '48px' }}>
+          <div style={{ paddingTop: '48px' }} className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/gallery" element={<Gallery />} />
