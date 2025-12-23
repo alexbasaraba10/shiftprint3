@@ -284,6 +284,13 @@ const Calculator = () => {
         formData.append('layerHeight', layerHeight);
         formData.append('awaitingConfirmation', 'true'); // Flag for first step
         
+        // Pass the calculated price from frontend
+        if (estimatedPrice) {
+          formData.append('clientPrice', estimatedPrice.total.toString());
+          formData.append('clientWeight', estimatedPrice.weight.toString());
+          formData.append('clientTime', estimatedPrice.time.toString());
+        }
+        
         if (!operatorChoice && selectedMaterial) {
           formData.append('materialId', selectedMaterial);
           formData.append('materialName', language === 'ru' ? material.name : material.nameRo);
