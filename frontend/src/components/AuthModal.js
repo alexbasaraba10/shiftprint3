@@ -72,12 +72,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       firstName,
       lastName,
       phone,
+      email: method === 'google' ? localStorage.getItem('userEmail') || '' : '',
       authMethod: method || 'phone',
       createdAt: new Date().toISOString()
     };
 
     localStorage.setItem('user', JSON.stringify(userData));
-    toast.success(language === 'ru' ? '✅ Заказ оформлен!' : '✅ Comandă plasată!');
+    toast.success(language === 'ru' ? '✅ Данные сохранены!' : '✅ Date salvate!');
     onSuccess(userData);
     handleClose();
   };
