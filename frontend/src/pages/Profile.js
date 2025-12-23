@@ -13,7 +13,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [user, setUser] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminEmail, setAdminEmail] = useState('');
