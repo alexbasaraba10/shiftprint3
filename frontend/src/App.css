@@ -415,3 +415,63 @@ section {
     width: 100% !important;
   }
 }
+
+/* Mini 3D Printer Animation for waiting state */
+.mini-3d-printer {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.mini-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  overflow: hidden;
+}
+
+.mini-head {
+  position: absolute;
+  top: 8px;
+  width: 16px;
+  height: 8px;
+  background: linear-gradient(180deg, #555 0%, #333 100%);
+  border-radius: 2px;
+  animation: miniHeadMove 1.5s ease-in-out infinite;
+}
+
+@keyframes miniHeadMove {
+  0%, 100% { left: 6px; }
+  50% { left: calc(100% - 22px); }
+}
+
+.mini-bed {
+  position: absolute;
+  bottom: 8px;
+  left: 6px;
+  right: 6px;
+  height: 4px;
+  background: #333;
+  border-radius: 1px;
+}
+
+.mini-object {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 0;
+  background: linear-gradient(180deg, #0071E3 0%, #00C7BE 100%);
+  border-radius: 2px 2px 0 0;
+  animation: miniPrint 2s ease-in-out infinite;
+}
+
+@keyframes miniPrint {
+  0%, 10% { height: 0; }
+  50%, 60% { height: 16px; }
+  90%, 100% { height: 0; }
+}
