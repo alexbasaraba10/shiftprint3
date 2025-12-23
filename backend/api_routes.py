@@ -239,6 +239,7 @@ async def upload_file(
         # Get material density
         material_density = 1.24  # Default PLA
         material_type_from_db = 'PLA'
+        material = None  # Initialize material variable
         
         if materialId and len(materialId) == 24:  # Valid ObjectId
             try:
