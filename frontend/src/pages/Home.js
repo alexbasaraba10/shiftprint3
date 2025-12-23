@@ -35,16 +35,14 @@ const Home = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
+        overflow: 'hidden'
       }}>
-        {/* Video Background with fallback */}
+        {/* Video Background */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%231a1a2e'/%3E%3C/svg%3E"
           style={{
             position: 'absolute',
             top: 0,
@@ -52,29 +50,11 @@ const Home = () => {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            zIndex: 0,
-            backgroundColor: '#1a1a2e'
-          }}
-          onError={(e) => {
-            e.target.style.display = 'none';
+            zIndex: 0
           }}
         >
           <source src="https://customer-assets.emergentagent.com/job_f1d7a600-9be3-4269-857f-414a16853032/artifacts/mi7amiy6_lv_0_20251123134625.mp4" type="video/mp4" />
         </video>
-
-        {/* Animated gradient fallback when video fails */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-          zIndex: 0
-        }}>
-          {/* Animated particles/dots effect */}
-          <div className="hero-particles" />
-        </div>
 
         {/* Dark overlay for better text readability */}
         <div style={{
@@ -83,7 +63,7 @@ const Home = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.6) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%)',
           zIndex: 1
         }} />
 
