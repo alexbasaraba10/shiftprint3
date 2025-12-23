@@ -95,6 +95,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       createdAt: new Date().toISOString()
     };
 
+    // Save phone for future use
+    localStorage.setItem('userPhone', phone);
     localStorage.setItem('user', JSON.stringify(userData));
     toast.success(language === 'ru' ? '✅ Данные сохранены!' : '✅ Date salvate!');
     onSuccess(userData);
@@ -102,10 +104,14 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   const handleClose = () => {
-    setMethod(null);
-    setFirstName('');
-    setLastName('');
-    setPhone('+373');
+    // Don't reset data if user is logged in
+    const savedUser = localStorage.getItem('user');
+    if (!savedUser) {
+      setMethod(null);
+      setFirstName('');
+      setLastName('');
+      setPhone('+373');
+    }
     onClose();
   };
 
