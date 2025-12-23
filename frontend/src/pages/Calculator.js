@@ -712,9 +712,6 @@ const Calculator = () => {
                     <div className="pulse-indicator"></div>
                   </div>
                 )}
-                    <Loader2 className="animate-spin" size={24} color="var(--brand-primary)" />
-                  </div>
-                )}
 
                 {/* Step 2: Place order (after confirmation) */}
                 {(orderStatus === 'approved' || orderStatus === 'price_changed') && (
