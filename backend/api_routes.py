@@ -546,10 +546,9 @@ async def confirm_order_with_customer(order_id: str, data: ConfirmOrderData):
                 
                 message += f"\n📅 {datetime.now().strftime('%d.%m.%Y %H:%M')}"
                 
-                # Keyboard with call button and complete button
+                # Keyboard with complete button (phone is shown in message text)
                 keyboard = [
-                    [InlineKeyboardButton(f"📞 Позвонить {data.customerPhone}", url=f"tel:{data.customerPhone}")],
-                    [InlineKeyboardButton("✅ Выполнен", callback_data=f"complete_{order_id}")]
+                    [InlineKeyboardButton("✅ Заказ выполнен", callback_data=f"complete_{order_id}")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
