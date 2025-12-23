@@ -22,38 +22,52 @@ const PrinterLoader = ({ size = 'medium', text = 'ShiftPrint' }) => {
         <div className="typing-cursor">|</div>
       </div>
       
-      {/* Printer illustration - more like actual printer */}
-      <div className="printer-illustration">
-        <div className="printer-body">
-          {/* Paper slot and paper animation */}
-          <div className="paper-output-area">
-            <div className="paper-coming-out">
-              <div className="printed-text-line"></div>
-              <div className="printed-text-line short"></div>
-              <div className="printed-text-line medium"></div>
+      {/* 3D Printer illustration */}
+      <div className="printer-3d-illustration">
+        <div className="printer-3d-body">
+          {/* Vertical frame pillars */}
+          <div className="frame-pillar left"></div>
+          <div className="frame-pillar right"></div>
+          
+          {/* Top horizontal bar with Z-axis */}
+          <div className="top-bar">
+            <div className="z-motor"></div>
+          </div>
+          
+          {/* Moving print head (X-carriage) */}
+          <div className="x-carriage">
+            <div className="extruder">
+              <div className="nozzle"></div>
+              <div className="filament-drip"></div>
             </div>
           </div>
           
-          {/* Printer top section with feeder */}
-          <div className="printer-top-section">
-            <div className="paper-input-tray"></div>
+          {/* Build plate */}
+          <div className="build-plate">
+            {/* Printed object growing */}
+            <div className="printed-object">
+              <div className="layer layer-1"></div>
+              <div className="layer layer-2"></div>
+              <div className="layer layer-3"></div>
+              <div className="layer layer-4"></div>
+            </div>
           </div>
           
-          {/* Main printer body */}
-          <div className="printer-main">
-            <div className="printer-display-panel">
-              <div className="status-led active"></div>
+          {/* Base */}
+          <div className="printer-3d-base">
+            <div className="control-box">
+              <div className="lcd-screen"></div>
               <div className="status-led"></div>
             </div>
-            <div className="printer-vent-lines">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
           </div>
           
-          {/* Printer base/tray */}
-          <div className="printer-output-tray"></div>
+          {/* Filament spool */}
+          <div className="filament-holder">
+            <div className="spool">
+              <div className="spool-inner"></div>
+            </div>
+            <div className="filament-line"></div>
+          </div>
         </div>
       </div>
       
