@@ -22,61 +22,45 @@ const PrinterLoader = ({ size = 'medium', text = 'ShiftPrint' }) => {
         <div className="typing-cursor">|</div>
       </div>
       
-      {/* 3D Printer illustration */}
-      <div className="printer-3d-illustration">
-        <div className="printer-3d-body">
-          {/* Vertical frame pillars */}
-          <div className="frame-pillar left"></div>
-          <div className="frame-pillar right"></div>
+      {/* Simple realistic 3D Printer */}
+      <div className="printer-3d-container">
+        <div className="printer-3d">
+          {/* Frame */}
+          <div className="frame-left"></div>
+          <div className="frame-right"></div>
+          <div className="frame-top"></div>
           
-          {/* Top horizontal bar with Z-axis */}
-          <div className="top-bar">
-            <div className="z-motor"></div>
-          </div>
-          
-          {/* Moving print head (X-carriage) */}
-          <div className="x-carriage">
-            <div className="extruder">
-              <div className="nozzle"></div>
-              <div className="filament-drip"></div>
+          {/* Moving carriage with extruder */}
+          <div className="carriage">
+            <div className="extruder-block">
+              <div className="hot-end"></div>
             </div>
           </div>
           
           {/* Build plate */}
           <div className="build-plate">
-            {/* Printed object growing */}
-            <div className="printed-object">
-              <div className="layer layer-1"></div>
-              <div className="layer layer-2"></div>
-              <div className="layer layer-3"></div>
-              <div className="layer layer-4"></div>
+            <div className="printed-layers">
+              <div className="layer"></div>
+              <div className="layer"></div>
+              <div className="layer"></div>
             </div>
           </div>
           
-          {/* Base */}
-          <div className="printer-3d-base">
-            <div className="control-box">
-              <div className="lcd-screen"></div>
-              <div className="status-led"></div>
+          {/* Base with LCD */}
+          <div className="printer-base">
+            <div className="lcd-display">
+              <div className="lcd-progress"></div>
             </div>
-          </div>
-          
-          {/* Filament spool */}
-          <div className="filament-holder">
-            <div className="spool">
-              <div className="spool-inner"></div>
-            </div>
-            <div className="filament-line"></div>
           </div>
         </div>
       </div>
       
-      {/* Loading indicator */}
-      <div className="loading-indicator">
-        <div className="loading-bar">
-          <div className="loading-progress"></div>
+      {/* Loading bar */}
+      <div className="loading-bar-container">
+        <div className="loading-bar-bg">
+          <div className="loading-bar-fill"></div>
         </div>
-        <span className="loading-text">Загрузка...</span>
+        <span className="loading-text-small">Загрузка...</span>
       </div>
     </div>
   );
