@@ -24,14 +24,33 @@ const Profile = () => {
     loadOrders();
   }, []);
 
-  const loadUserData = () => {
+  const loadUserData = async () => {
     const userData = localStorage.getItem('user');
     if (userData) {
-      setUser(JSON.parse(userData));
-      const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-      if (history.length >= 10) setDiscount(10);
-      else if (history.length >= 5) setDiscount(5);
-      else if (history.length >= 3) setDiscount(3);
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      
+      // Load discount from API for Google users
+      if (parsedUser.email) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/discount/${encodeURIComponent(parsedUser.email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setDiscount(data.discountPercent);
+          }
+        } catch (error) {
+          console.error('Error loading discount:', error);
+          // Fallback to local calculation
+          const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+          const completed = history.filter(o => o.status === 'completed').length;
+          setDiscount(Math.min(completed * 5, 25));
+        }
+      } else {
+        // For non-Google users, calculate locally
+        const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+        const completed = history.filter(o => o.status === 'completed').length;
+        setDiscount(Math.min(completed * 5, 25));
+      }
     }
   };
 
