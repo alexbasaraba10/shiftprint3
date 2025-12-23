@@ -22,6 +22,10 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
+      // Add scopes for better user info
+      provider.addScope('profile');
+      provider.addScope('email');
+      
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       
@@ -30,11 +34,24 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       setFirstName(nameParts[0] || '');
       setLastName(nameParts.slice(1).join(' ') || '');
       
+      // Store email for discount tracking
+      localStorage.setItem('userEmail', user.email || '');
+      
       toast.success(language === 'ru' ? 'Вход через Google успешен!' : 'Autentificare Google reușită!');
       setMethod('google');
     } catch (error) {
       console.error('Google auth error:', error);
-      if (error.code !== 'auth/popup-closed-by-user') {
+      if (error.code === 'auth/popup-closed-by-user') {
+        // User closed popup - don't show error
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error(language === 'ru' 
+          ? 'Домен не авторизован в Firebase. Используйте форму с телефоном.' 
+          : 'Domeniul nu este autorizat în Firebase. Utilizați formularul cu telefon.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.error(language === 'ru' 
+          ? 'Popup заблокирован браузером. Разрешите popup-окна.' 
+          : 'Popup blocat de browser. Permiteți ferestrele popup.');
+      } else {
         toast.error(language === 'ru' ? 'Ошибка входа через Google' : 'Eroare autentificare Google');
       }
     }
