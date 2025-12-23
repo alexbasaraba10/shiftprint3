@@ -664,14 +664,34 @@ const Calculator = () => {
 
                 {/* Waiting for confirmation */}
                 {orderStatus === 'pending' && (
-                  <div style={{ textAlign: 'center', padding: '32px', background: 'var(--bg-secondary)', borderRadius: '16px', border: '2px dashed var(--border-medium)' }}>
-                    <Loader2 className="animate-spin" size={48} color="var(--brand-primary)" style={{ marginBottom: '16px' }} />
-                    <h3 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>
-                      {language === 'ru' ? 'Ожидание подтверждения...' : 'Așteptare confirmare...'}
-                    </h3>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-                      {language === 'ru' ? 'Оператор проверяет вашу модель и подтверждает цену' : 'Operatorul verifică modelul dvs. și confirmă prețul'}
-                    </p>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '16px',
+                    padding: '16px 20px', 
+                    background: 'var(--bg-secondary)', 
+                    borderRadius: '14px', 
+                    border: '1px solid var(--border-subtle)'
+                  }}>
+                    {/* Mini 3D printer animation */}
+                    <div style={{ flexShrink: 0 }}>
+                      <div className="mini-3d-printer">
+                        <div className="mini-frame">
+                          <div className="mini-head"></div>
+                          <div className="mini-bed"></div>
+                          <div className="mini-object"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px', color: 'var(--text-primary)' }}>
+                        {language === 'ru' ? 'Ожидание подтверждения...' : 'Așteptare confirmare...'}
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0 }}>
+                        {language === 'ru' ? 'Оператор проверяет модель' : 'Operatorul verifică modelul'}
+                      </p>
+                    </div>
+                    <Loader2 className="animate-spin" size={24} color="var(--brand-primary)" />
                   </div>
                 )}
 
