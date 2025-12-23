@@ -6,46 +6,54 @@ const PrinterLoader = ({ size = 'medium', text = '' }) => {
   
   return (
     <div className={`printer-loader-container ${sizeClass}`}>
-      <div className="printer-3d">
-        {/* Printer frame */}
-        <div className="printer-frame">
-          {/* Top bar with logo */}
-          <div className="printer-top-bar">
-            <div className="printer-logo"></div>
-          </div>
-          
-          {/* Print bed */}
-          <div className="print-bed">
-            <div className="bed-surface"></div>
-          </div>
-          
-          {/* Print head / extruder */}
-          <div className="print-head">
-            <div className="extruder">
-              <div className="nozzle"></div>
+      {/* Typing text animation */}
+      <div className="typing-animation">
+        <div className="typing-text">
+          {(text || 'ShiftPrint').split('').map((char, index) => (
+            <span 
+              key={index} 
+              className="typing-char"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </div>
+        <div className="typing-cursor">|</div>
+      </div>
+      
+      {/* Printer illustration */}
+      <div className="printer-illustration">
+        <div className="printer-body">
+          {/* Paper coming out */}
+          <div className="paper-slot">
+            <div className="paper">
+              <div className="print-line line-1"></div>
+              <div className="print-line line-2"></div>
+              <div className="print-line line-3"></div>
             </div>
           </div>
-          
-          {/* Object being printed */}
-          <div className="printed-object">
-            <div className="layer layer-1"></div>
-            <div className="layer layer-2"></div>
-            <div className="layer layer-3"></div>
-            <div className="layer layer-4"></div>
-            <div className="layer layer-5"></div>
+          {/* Printer top */}
+          <div className="printer-top">
+            <div className="printer-display">
+              <div className="display-dot"></div>
+              <div className="display-dot"></div>
+              <div className="display-dot"></div>
+            </div>
           </div>
-          
-          {/* Filament spool */}
-          <div className="filament-spool">
-            <div className="spool-center"></div>
+          {/* Printer base */}
+          <div className="printer-base">
+            <div className="printer-tray"></div>
           </div>
-          
-          {/* Filament line */}
-          <div className="filament-line"></div>
         </div>
       </div>
       
-      {text && <div className="loader-text">{text}</div>}
+      {/* Loading dots */}
+      <div className="loading-dots">
+        <span className="dot"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
+      </div>
     </div>
   );
 };
