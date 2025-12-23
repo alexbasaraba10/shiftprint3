@@ -400,7 +400,7 @@ async def upload_file(
 🔧 Амортизация: <code>{round(amortization_cost)} MDL</code>
 📊 <b>Итого себест.:</b> <code>{round(base_cost)} MDL</code>
 ━━━━━━━━━━━━━━━━━━
-💰 <b>Цена клиенту (×1.3):</b> <code>{final_price} MDL</code>
+💰 <b>ЦЕНА КЛИЕНТУ:</b> <code>{final_price} MDL</code>
 """
             
             # Customer info
