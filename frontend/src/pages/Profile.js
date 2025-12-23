@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Package, Percent, RefreshCw, User, Shield, Loader2 } from 'lucide-react';
+import { LogOut, Package, Percent, RefreshCw, User, Shield, Loader2, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { auth } from '../lib/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
