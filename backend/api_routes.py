@@ -220,7 +220,10 @@ async def upload_file(
     customerName: Optional[str] = Form(None),
     scale: Optional[str] = Form('1'),
     infill: Optional[str] = Form('20'),
-    layerHeight: Optional[str] = Form('0.2')
+    layerHeight: Optional[str] = Form('0.2'),
+    clientPrice: Optional[str] = Form(None),
+    clientWeight: Optional[str] = Form(None),
+    clientTime: Optional[str] = Form(None)
 ):
     if not file.filename.lower().endswith(('.stl', '.obj')):
         raise HTTPException(status_code=400, detail="Only STL and OBJ files supported")
