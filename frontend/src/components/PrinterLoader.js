@@ -1,7 +1,7 @@
 import React from 'react';
 import './PrinterLoader.css';
 
-const PrinterLoader = ({ size = 'medium', text = '' }) => {
+const PrinterLoader = ({ size = 'medium', text = 'ShiftPrint' }) => {
   const sizeClass = size === 'small' ? 'printer-small' : size === 'large' ? 'printer-large' : '';
   
   return (
@@ -9,11 +9,11 @@ const PrinterLoader = ({ size = 'medium', text = '' }) => {
       {/* Typing text animation */}
       <div className="typing-animation">
         <div className="typing-text">
-          {(text || 'ShiftPrint').split('').map((char, index) => (
+          {text.split('').map((char, index) => (
             <span 
               key={index} 
               className="typing-char"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              style={{ animationDelay: `${index * 0.08}s` }}
             >
               {char === ' ' ? '\u00A0' : char}
             </span>
@@ -22,37 +22,47 @@ const PrinterLoader = ({ size = 'medium', text = '' }) => {
         <div className="typing-cursor">|</div>
       </div>
       
-      {/* Printer illustration */}
+      {/* Printer illustration - more like actual printer */}
       <div className="printer-illustration">
         <div className="printer-body">
-          {/* Paper coming out */}
-          <div className="paper-slot">
-            <div className="paper">
-              <div className="print-line line-1"></div>
-              <div className="print-line line-2"></div>
-              <div className="print-line line-3"></div>
+          {/* Paper slot and paper animation */}
+          <div className="paper-output-area">
+            <div className="paper-coming-out">
+              <div className="printed-text-line"></div>
+              <div className="printed-text-line short"></div>
+              <div className="printed-text-line medium"></div>
             </div>
           </div>
-          {/* Printer top */}
-          <div className="printer-top">
-            <div className="printer-display">
-              <div className="display-dot"></div>
-              <div className="display-dot"></div>
-              <div className="display-dot"></div>
+          
+          {/* Printer top section with feeder */}
+          <div className="printer-top-section">
+            <div className="paper-input-tray"></div>
+          </div>
+          
+          {/* Main printer body */}
+          <div className="printer-main">
+            <div className="printer-display-panel">
+              <div className="status-led active"></div>
+              <div className="status-led"></div>
+            </div>
+            <div className="printer-vent-lines">
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           </div>
-          {/* Printer base */}
-          <div className="printer-base">
-            <div className="printer-tray"></div>
-          </div>
+          
+          {/* Printer base/tray */}
+          <div className="printer-output-tray"></div>
         </div>
       </div>
       
-      {/* Loading dots */}
-      <div className="loading-dots">
-        <span className="dot"></span>
-        <span className="dot"></span>
-        <span className="dot"></span>
+      {/* Loading indicator */}
+      <div className="loading-indicator">
+        <div className="loading-bar">
+          <div className="loading-progress"></div>
+        </div>
+        <span className="loading-text">Загрузка...</span>
       </div>
     </div>
   );
