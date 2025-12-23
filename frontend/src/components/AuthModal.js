@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Phone, User, Loader2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from './ui/button';
@@ -17,6 +17,24 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('+373');
   const [loading, setLoading] = useState(false);
+
+  // Load saved user data on mount
+  useEffect(() => {
+    if (isOpen) {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const userData = JSON.parse(savedUser);
+        setFirstName(userData.firstName || '');
+        setLastName(userData.lastName || '');
+        if (userData.phone) {
+          setPhone(userData.phone);
+        }
+        if (userData.authMethod === 'google') {
+          setMethod('google');
+        }
+      }
+    }
+  }, [isOpen]);
 
   const handleGoogleAuth = async () => {
     setLoading(true);
