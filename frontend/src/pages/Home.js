@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
-import { ArrowRight, Printer, Zap, Cpu, Sparkles } from 'lucide-react';
-import PrinterCarousel from '../components/PrinterCarousel';
+import { ArrowRight } from 'lucide-react';
 import InstagramStories from '../components/InstagramStories';
 
 const Home = () => {
