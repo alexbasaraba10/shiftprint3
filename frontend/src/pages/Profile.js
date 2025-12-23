@@ -304,12 +304,6 @@ const Profile = () => {
             )}
           </div>
         </div>
-
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-          onSuccess={handleAuthSuccess}
-        />
       </div>
     );
   }
