@@ -127,6 +127,47 @@ export const LanguageProvider = ({ children }) => {
           markup: 'Наценка %',
           labor: 'Стоимость работы'
         }
+      },
+      profile: {
+        title: 'Личный кабинет',
+        login: 'Войдите через аккаунт Google',
+        loginDesc: 'Для отслеживания заказов, получения скидок и персональных предложений',
+        loginButton: 'Войти через Google',
+        logout: 'Выйти',
+        totalOrders: 'Всего заказов',
+        yourDiscount: 'Ваша скидка',
+        orderHistory: 'История заказов',
+        noOrders: 'У вас пока нет заказов',
+        createFirstOrder: 'Создать первый заказ',
+        repeat: 'Повторить',
+        admin: 'Администратор',
+        adminLogin: 'Вход для администратора',
+        cancel: 'Отмена'
+      },
+      common: {
+        loading: 'Загрузка...',
+        error: 'Ошибка',
+        success: 'Успешно',
+        save: 'Сохранить',
+        cancel: 'Отмена',
+        delete: 'Удалить',
+        edit: 'Редактировать',
+        add: 'Добавить',
+        search: 'Поиск',
+        filter: 'Фильтр',
+        sort: 'Сортировка',
+        price: 'Цена',
+        material: 'Материал',
+        color: 'Цвет',
+        status: 'Статус'
+      },
+      orderStatus: {
+        pending: 'В обработке',
+        approved: 'Подтверждён',
+        printing: 'В печати',
+        pendingPayment: 'Ожидание оплаты',
+        ready: 'Готов к выдаче',
+        completed: 'Завершён'
       }
     },
     ro: {
