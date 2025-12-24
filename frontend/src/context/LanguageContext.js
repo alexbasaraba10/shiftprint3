@@ -136,7 +136,8 @@ export const LanguageProvider = ({ children }) => {
         shop: 'Produse',
         calculator: 'Calcul cost',
         contacts: 'Contacte',
-        textilePrint: 'Black Textile Print'
+        textilePrint: 'Black Textile Print',
+        admin: 'Panou administrator'
       },
       gallery: {
         title: 'Proiectele noastre',
@@ -207,15 +208,72 @@ export const LanguageProvider = ({ children }) => {
         email: 'Email',
         password: 'Parolă',
         loginButton: 'Intră',
+        orders: {
+          title: 'Comenzi',
+          pending: 'Comenzi în așteptare',
+          file: 'Fișier',
+          material: 'Material',
+          cost: 'Cost',
+          approve: 'Confirmă',
+          edit: 'Modifică prețul'
+        },
         materials: {
-          color: 'Culoare'
+          title: 'Materiale',
+          add: 'Adaugă material',
+          name: 'Denumire',
+          color: 'Culoare',
+          type: 'Tip',
+          price: 'Preț per kg',
+          description: 'Descriere'
         },
         settings: {
           title: 'Setări',
-          electricity: 'Electricitate',
-          postProcessing: 'Post-procesare',
-          markup: 'Adaos'
+          electricity: 'Cost electricitate',
+          power: 'Putere imprimantă',
+          markup: 'Adaos %',
+          labor: 'Cost manoperă'
         }
+      },
+      profile: {
+        title: 'Cont personal',
+        login: 'Conectați-vă prin contul Google',
+        loginDesc: 'Pentru urmărirea comenzilor, reduceri și oferte personale',
+        loginButton: 'Conectare cu Google',
+        logout: 'Ieși',
+        totalOrders: 'Total comenzi',
+        yourDiscount: 'Reducerea dvs.',
+        orderHistory: 'Istoric comenzi',
+        noOrders: 'Nu aveți încă comenzi',
+        createFirstOrder: 'Creează prima comandă',
+        repeat: 'Repetă',
+        admin: 'Administrator',
+        adminLogin: 'Autentificare administrator',
+        cancel: 'Anulare'
+      },
+      common: {
+        loading: 'Se încarcă...',
+        error: 'Eroare',
+        success: 'Succes',
+        save: 'Salvează',
+        cancel: 'Anulare',
+        delete: 'Șterge',
+        edit: 'Editează',
+        add: 'Adaugă',
+        search: 'Caută',
+        filter: 'Filtrează',
+        sort: 'Sortează',
+        price: 'Preț',
+        material: 'Material',
+        color: 'Culoare',
+        status: 'Status'
+      },
+      orderStatus: {
+        pending: 'În procesare',
+        approved: 'Confirmat',
+        printing: 'În printare',
+        pendingPayment: 'Așteptare plată',
+        ready: 'Gata pentru ridicare',
+        completed: 'Finalizat'
       }
     }
   };
