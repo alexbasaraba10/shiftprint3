@@ -11,7 +11,16 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('ru');
+  const [language, setLanguage] = useState(() => {
+    // Get saved language from localStorage or default to 'ru'
+    return localStorage.getItem('language') || 'ru';
+  });
+
+  const toggleLanguage = () => {
+    const newLang = language === 'ru' ? 'ro' : 'ru';
+    setLanguage(newLang);
+    localStorage.setItem('language', newLang);
+  };
 
   const translations = {
     ru: {
