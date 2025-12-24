@@ -116,55 +116,68 @@ const Profile = () => {
       provider.addScope('profile');
       provider.addScope('email');
       
-      const result = await signInWithPopup(auth, provider);
-      const googleUser = result.user;
-      
-      const displayName = googleUser.displayName || '';
-      const nameParts = displayName.split(' ');
-      
-      const userData = {
-        firstName: nameParts[0] || '',
-        lastName: nameParts.slice(1).join(' ') || '',
-        email: googleUser.email || '',
-        phone: localStorage.getItem('userPhone') || '',
-        authMethod: 'google',
-        googleId: googleUser.uid,
-        photoURL: googleUser.photoURL,
-        createdAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('userEmail', googleUser.email || '');
-      setUser(userData);
-      
-      // Load discount for this user
-      if (userData.email) {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/discount/${encodeURIComponent(userData.email)}`);
-          if (response.ok) {
-            const data = await response.json();
-            setDiscount(data.discountPercent);
+      // Try popup first, fall back to redirect if blocked
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const googleUser = result.user;
+        
+        const displayName = googleUser.displayName || '';
+        const nameParts = displayName.split(' ');
+        
+        const userData = {
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          email: googleUser.email || '',
+          phone: localStorage.getItem('userPhone') || '',
+          authMethod: 'google',
+          googleId: googleUser.uid,
+          photoURL: googleUser.photoURL,
+          createdAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userEmail', googleUser.email || '');
+        setUser(userData);
+        
+        // Load discount for this user
+        if (userData.email) {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/discount/${encodeURIComponent(userData.email)}`);
+            if (response.ok) {
+              const data = await response.json();
+              setDiscount(data.discountPercent);
+            }
+          } catch (e) {
+            console.error('Error loading discount:', e);
           }
-        } catch (e) {
-          console.error('Error loading discount:', e);
+        }
+        
+        toast.success(language === 'ru' ? 'Вход выполнен успешно!' : 'Autentificare reușită!');
+        loadOrders();
+        setGoogleLoading(false);
+      } catch (popupError) {
+        console.log('Popup blocked or failed, trying redirect...', popupError.code);
+        // If popup is blocked or fails, use redirect method
+        if (popupError.code === 'auth/popup-blocked' || 
+            popupError.code === 'auth/popup-closed-by-user' ||
+            popupError.code === 'auth/cancelled-popup-request') {
+          // Use redirect as fallback
+          await signInWithRedirect(auth, provider);
+          // Note: Result will be handled by checkRedirectResult on page reload
+        } else if (popupError.code === 'auth/unauthorized-domain') {
+          toast.error(language === 'ru' 
+            ? 'Домен не авторизован в Firebase. Добавьте текущий домен в Firebase Console → Authentication → Settings → Authorized domains' 
+            : 'Domeniul nu este autorizat în Firebase. Adăugați domeniul curent în Firebase Console → Authentication → Settings → Authorized domains');
+          setGoogleLoading(false);
+        } else {
+          throw popupError;
         }
       }
-      
-      toast.success(language === 'ru' ? 'Вход выполнен успешно!' : 'Autentificare reușită!');
-      loadOrders();
     } catch (error) {
       console.error('Google auth error:', error);
-      if (error.code === 'auth/popup-closed-by-user') {
-        // User closed popup
-      } else if (error.code === 'auth/unauthorized-domain') {
-        toast.error(language === 'ru' 
-          ? 'Домен не авторизован в Firebase' 
-          : 'Domeniul nu este autorizat în Firebase');
-      } else {
-        toast.error(language === 'ru' ? 'Ошибка входа через Google' : 'Eroare autentificare Google');
-      }
+      toast.error(language === 'ru' ? 'Ошибка входа через Google' : 'Eroare autentificare Google');
+      setGoogleLoading(false);
     }
-    setGoogleLoading(false);
   };
 
   const handleAdminLogin = async () => {
