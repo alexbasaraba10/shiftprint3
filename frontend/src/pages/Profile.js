@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogOut, Package, Percent, RefreshCw, User, Shield, Loader2, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { auth } from '../lib/firebase';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 
 const Profile = () => {
   const { language } = useLanguage();
