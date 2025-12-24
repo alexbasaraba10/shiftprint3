@@ -23,7 +23,44 @@ const Profile = () => {
   useEffect(() => {
     loadUserData();
     loadOrders();
+    // Check for redirect result from Google auth
+    checkRedirectResult();
   }, []);
+
+  const checkRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result) {
+        const googleUser = result.user;
+        const displayName = googleUser.displayName || '';
+        const nameParts = displayName.split(' ');
+        
+        const userData = {
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          email: googleUser.email || '',
+          phone: localStorage.getItem('userPhone') || '',
+          authMethod: 'google',
+          googleId: googleUser.uid,
+          photoURL: googleUser.photoURL,
+          createdAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userEmail', googleUser.email || '');
+        setUser(userData);
+        toast.success(language === 'ru' ? 'Вход выполнен успешно!' : 'Autentificare reușită!');
+        loadOrders();
+      }
+    } catch (error) {
+      console.error('Redirect auth error:', error);
+      if (error.code === 'auth/unauthorized-domain') {
+        toast.error(language === 'ru' 
+          ? 'Домен не авторизован в Firebase. Добавьте домен в Firebase Console.' 
+          : 'Domeniul nu este autorizat în Firebase. Adăugați domeniul în Firebase Console.');
+      }
+    }
+  };
 
   const loadUserData = async () => {
     const userData = localStorage.getItem('user');
