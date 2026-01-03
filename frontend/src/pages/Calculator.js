@@ -795,6 +795,88 @@ const Calculator = () => {
       </div>
 
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onSuccess={handleAuthSuccess} />
+      
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div 
+          onClick={() => setShowSuccessModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px'
+          }}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'var(--bg-primary)',
+              borderRadius: '24px',
+              maxWidth: '420px',
+              width: '100%',
+              padding: '40px',
+              textAlign: 'center',
+              animation: 'slideUp 0.3s ease'
+            }}
+          >
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              animation: 'pulse 1.5s infinite'
+            }}>
+              <CheckCircle size={40} color="white" />
+            </div>
+            
+            <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
+              {language === 'ru' ? 'Заказ успешно создан!' : 'Comandă creată cu succes!'}
+            </h2>
+            
+            <p style={{ fontSize: '16px', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.6 }}>
+              {language === 'ru' 
+                ? 'Оператор свяжется с вами в ближайшее время для уточнения всех подробностей.'
+                : 'Operatorul vă va contacta în curând pentru a clarifica toate detaliile.'}
+            </p>
+            
+            <Button 
+              onClick={() => setShowSuccessModal(false)}
+              style={{ 
+                width: '100%', 
+                height: '48px',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: 600
+              }}
+            >
+              {language === 'ru' ? 'Понятно' : 'Am înțeles'}
+            </Button>
+          </div>
+        </div>
+      )}
+      
+      <style>{`
+        @keyframes slideUp {
+          from { transform: translateY(30px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+      `}</style>
     </div>
   );
 };
