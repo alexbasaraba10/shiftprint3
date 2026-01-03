@@ -296,6 +296,7 @@ async def upload_file(
         "fileUrl": str(file_path),
         "materialId": materialId,
         "materialName": materialName,
+        "materialColor": materialColor,
         "operatorChoice": operatorChoice,
         "purpose": purpose,
         "loads": loads,
