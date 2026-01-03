@@ -129,12 +129,12 @@
   height: 14px;
   background: #4a4a4a;
   border-radius: 3px;
-  animation: carriageUpDown 3s ease-in-out infinite;
+  animation: carriageUpDown 4s ease-in-out infinite;
 }
 
 @keyframes carriageUpDown {
-  0%, 100% { top: 12%; }
-  50% { top: 40%; }
+  0% { top: 55%; }
+  100% { top: 12%; }
 }
 
 .extruder-block {
@@ -144,12 +144,12 @@
   background: linear-gradient(180deg, #666 0%, #444 100%);
   border-radius: 3px;
   top: 10px;
-  animation: extruderMove 2s ease-in-out infinite;
+  animation: extruderMove 1s ease-in-out infinite alternate;
 }
 
 @keyframes extruderMove {
-  0%, 100% { left: 10%; }
-  50% { left: calc(100% - 30px); }
+  0% { left: 10%; }
+  100% { left: calc(100% - 30px); }
 }
 
 .hot-end {
@@ -163,7 +163,7 @@
   border-radius: 0 0 3px 3px;
 }
 
-/* Build plate */
+/* Build plate - fixed position */
 .build-plate {
   position: absolute;
   bottom: 22%;
@@ -172,12 +172,6 @@
   height: 6px;
   background: linear-gradient(180deg, #333 0%, #222 100%);
   border-radius: 2px;
-  animation: plateMove 3s ease-in-out infinite;
-}
-
-@keyframes plateMove {
-  0%, 100% { bottom: 22%; }
-  50% { bottom: 35%; }
 }
 
 .printed-layers {
@@ -185,9 +179,25 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  width: 30px;
+  overflow: hidden;
+}
+
+/* Printed object growing from bottom */
+.printed-object {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  background: linear-gradient(180deg, #0071E3 0%, #00C7BE 100%);
+  border-radius: 2px 2px 0 0;
+  animation: objectGrow 4s ease-in-out infinite;
+}
+
+@keyframes objectGrow {
+  0% { height: 0; }
+  100% { height: 35px; }
 }
 
 .layer {
@@ -195,18 +205,18 @@
   background: linear-gradient(90deg, #0071E3 0%, #00C7BE 100%);
   border-radius: 1px;
   margin-bottom: 1px;
-  animation: layerAppear 3s ease-in-out infinite;
+  animation: layerAppear 4s ease-in-out infinite;
   opacity: 0;
 }
 
 .layer:nth-child(1) { width: 30px; animation-delay: 0s; }
-.layer:nth-child(2) { width: 26px; animation-delay: 0.5s; }
-.layer:nth-child(3) { width: 22px; animation-delay: 1s; }
+.layer:nth-child(2) { width: 26px; animation-delay: 1s; }
+.layer:nth-child(3) { width: 22px; animation-delay: 2s; }
 
 @keyframes layerAppear {
   0%, 15% { opacity: 0; transform: scaleX(0); }
-  25%, 75% { opacity: 1; transform: scaleX(1); }
-  85%, 100% { opacity: 0; transform: scaleX(0); }
+  25%, 85% { opacity: 1; transform: scaleX(1); }
+  95%, 100% { opacity: 0; transform: scaleX(0); }
 }
 
 /* Printer base */
