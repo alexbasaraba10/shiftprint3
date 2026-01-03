@@ -25,10 +25,6 @@ const AdminShop = () => {
     inStock: true
   });
 
-  useEffect(() => {
-    loadShopItems();
-  }, []);
-
   const loadShopItems = async () => {
     try {
       const data = await shopAPI.getAll();
@@ -38,6 +34,10 @@ const AdminShop = () => {
       setShopItems(saved ? JSON.parse(saved) : []);
     }
   };
+
+  useEffect(() => {
+    loadShopItems();
+  }, []);
 
   const handleAddOrEdit = async () => {
     if (!formData.name || !formData.price || !formData.material) {
