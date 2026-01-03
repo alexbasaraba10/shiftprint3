@@ -274,20 +274,21 @@ async def upload_file(
                 settings = await db.print_settings.find_one()
                 if not settings:
                     settings = {
-                        "electricityCost": 2.5,
-                        "printerPower": 0.3,
-                        "markup": 30,
-                        "laborCost": 50
+                        "electricityCost": 3.15,  # Lei per 1000 Watts
+                        "printerPower": 300,      # Watts
+                        "markup": 2,              # Multiplier
+                        "laborCost": 10           # Depreciation per hour
                     }
                 
                 weight_kg = calculated_weight / 1000
                 material_cost = weight_kg * material.get('price', 290)
-                electricity_cost = calculated_time * settings['printerPower'] * settings['electricityCost']
-                labor_cost = calculated_time * settings['laborCost']
+                # Electricity: (Watts / 1000) * hours * rate
+                electricity_cost = (settings['printerPower'] / 1000) * calculated_time * settings['electricityCost']
+                depreciation_cost = calculated_time * settings['laborCost']
                 
-                subtotal = material_cost + electricity_cost + labor_cost
-                markup_amount = subtotal * (settings['markup'] / 100)
-                estimated_cost = subtotal + markup_amount
+                subtotal = material_cost + electricity_cost + depreciation_cost
+                multiplier = settings['markup'] if settings['markup'] >= 1 else 2
+                estimated_cost = subtotal * multiplier
     
     order_data = {
         "fileName": file.filename,
