@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus } from 'lucide-react';
+import ImageUpload from '../components/ImageUpload';
 
 const AdminShop = () => {
   const { language } = useLanguage();
