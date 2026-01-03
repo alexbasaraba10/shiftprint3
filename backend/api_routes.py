@@ -778,10 +778,10 @@ async def telegram_webhook(update: TelegramUpdate):
 
 # ============ PRINT SETTINGS ============
 class PrintSettings(BaseModel):
-    electricityCost: float  # Lei per kWh
-    printerPower: float     # kW
-    markup: float           # Percentage (e.g., 20 for 20%)
-    laborCost: float        # Lei per hour
+    electricityCost: float  # Lei per 1000 Watts (from electricity bill)
+    printerPower: float     # Watts (e.g., 300 for Ender 3)
+    markup: float           # Multiplier (e.g., 2 for double the cost)
+    laborCost: float        # Depreciation cost Lei per hour
 
 class PrintSettingsResponse(PrintSettings):
     id: str
@@ -790,12 +790,12 @@ class PrintSettingsResponse(PrintSettings):
 async def get_print_settings():
     settings = await db.print_settings.find_one()
     if not settings:
-        # Default settings
+        # Default settings based on Excel formula
         default = {
-            "electricityCost": 2.5,  # Lei per kWh
-            "printerPower": 0.3,     # 300W = 0.3 kW
-            "markup": 30,            # 30% markup
-            "laborCost": 50          # 50 Lei per hour
+            "electricityCost": 3.15,  # Lei per 1000 Watts (kWh tariff)
+            "printerPower": 300,      # 300 Watts
+            "markup": 2,              # Multiplier x2
+            "laborCost": 10           # 10 Lei depreciation per hour
         }
         result = await db.print_settings.insert_one(default)
         return PrintSettingsResponse(id=str(result.inserted_id), **default)
@@ -837,26 +837,38 @@ async def calculate_cost(request: CalculateCostRequest):
     settings = await db.print_settings.find_one()
     if not settings:
         settings = {
-            "electricityCost": 2.5,
-            "printerPower": 0.3,
-            "markup": 30,
-            "laborCost": 50
+            "electricityCost": 3.15,  # Lei per 1000 Watts
+            "printerPower": 300,      # Watts
+            "markup": 2,              # Multiplier
+            "laborCost": 10           # Depreciation per hour
         }
     
-    # Calculate costs
+    # Calculate costs according to Excel formula:
+    # Material cost = weight (kg) × price per kg
     weight_kg = request.weight / 1000
     material_cost = weight_kg * material['price']
-    electricity_cost = request.printTime * settings['printerPower'] * settings['electricityCost']
-    labor_cost = request.printTime * settings['laborCost']
     
-    subtotal = material_cost + electricity_cost + labor_cost
-    markup_amount = subtotal * (settings['markup'] / 100)
-    total_cost = subtotal + markup_amount
+    # Electricity cost = (printer power / 1000) × print time × electricity rate
+    # Formula: (Watts / 1000) * hours * (Lei per kWh)
+    electricity_cost = (settings['printerPower'] / 1000) * request.printTime * settings['electricityCost']
+    
+    # Depreciation/labor cost = print time × depreciation rate
+    depreciation_cost = request.printTime * settings['laborCost']
+    
+    # Subtotal (cost price)
+    subtotal = material_cost + electricity_cost + depreciation_cost
+    
+    # Final price = subtotal × multiplier
+    multiplier = settings['markup'] if settings['markup'] >= 1 else 2
+    total_cost = subtotal * multiplier
+    
+    # Markup amount for display
+    markup_amount = total_cost - subtotal
     
     return CalculateCostResponse(
         materialCost=round(material_cost, 2),
         electricityCost=round(electricity_cost, 2),
-        laborCost=round(labor_cost, 2),
+        laborCost=round(depreciation_cost, 2),
         subtotal=round(subtotal, 2),
         markup=round(markup_amount, 2),
         totalCost=round(total_cost, 2),
