@@ -359,14 +359,10 @@ const Calculator = () => {
           customerName: `${userData.firstName} ${userData.lastName}`
         });
         
-        toast.success(
-          language === 'ru' 
-            ? '🎉 Заказ оформлен! Оператор свяжется с вами в ближайшее время.' 
-            : '🎉 Comandă plasată! Operatorul vă va contacta în curând.',
-          { duration: 5000 }
-        );
+        // Show success modal instead of toast
+        setShowSuccessModal(true);
         
-        // Reset for new order
+        // Reset for new order after delay
         setTimeout(() => {
           setSelectedFiles([]);
           setSelectedMaterial(null);
@@ -377,7 +373,7 @@ const Calculator = () => {
           setOrderStatus(null);
           setCurrentOrderId(null);
           setConfirmedPrice(null);
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
       toast.error(language === 'ru' ? 'Ошибка оформления' : 'Eroare la plasare');
