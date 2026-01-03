@@ -358,7 +358,12 @@ const Calculator = () => {
           customerName: `${userData.firstName} ${userData.lastName}`
         });
         
-        toast.success(language === 'ru' ? '🎉 Заказ оформлен!' : '🎉 Comandă plasată!');
+        toast.success(
+          language === 'ru' 
+            ? '🎉 Заказ оформлен! Оператор свяжется с вами в ближайшее время.' 
+            : '🎉 Comandă plasată! Operatorul vă va contacta în curând.',
+          { duration: 5000 }
+        );
         
         // Reset for new order
         setTimeout(() => {
