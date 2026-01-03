@@ -156,11 +156,10 @@ const AdminShop = () => {
             </div>
           </div>
           <div>
-            <Label className="body-medium">{language === 'ru' ? 'URL изображения' : 'URL imagine'}</Label>
-            <Input 
+            <ImageUpload 
               value={formData.image}
-              onChange={(e) => setFormData({...formData, image: e.target.value})}
-              style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }}
+              onChange={(img) => setFormData({...formData, image: img})}
+              label={language === 'ru' ? 'Изображение товара' : 'Imagine produs'}
             />
           </div>
           <div>
