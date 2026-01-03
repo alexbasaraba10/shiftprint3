@@ -271,31 +271,6 @@ const InstagramStories = ({ items }) => {
         <div style={{ flex: 1 }} /> {/* Left tap zone */}
         <div style={{ flex: 2 }} /> {/* Right tap zone */}
       </div>
-
-      {/* Paused indicator */}
-      {isPaused && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '60px',
-          height: '60px',
-          background: 'rgba(0,0,0,0.5)',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: 0.8
-        }}>
-          <div style={{
-            width: '12px',
-            height: '20px',
-            borderLeft: '4px solid white',
-            borderRight: '4px solid white'
-          }} />
-        </div>
-      )}
     </div>
   );
 };
