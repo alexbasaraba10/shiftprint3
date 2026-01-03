@@ -302,139 +302,157 @@ const Home = () => {
           }
         </p>
         
-        <div style={{
+        <div className="services-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '24px'
         }}>
-          {/* Service 1: 3D Modeling */}
-          <div style={{
-            background: 'var(--bg-secondary)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-          }}
-          className="service-card"
-          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)'; }}
-          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div style={{ height: '200px', overflow: 'hidden' }}>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/kb55rmiz_20250923_205705%20%282%29.jpg"
-                alt="3D моделирование"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
+          {services.map((service) => (
+            <div 
+              key={service.id}
+              onClick={() => setSelectedService(service)}
+              style={{
+                background: 'var(--bg-secondary)',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                border: '1px solid var(--border-subtle)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                cursor: 'pointer'
+              }}
+              className="service-card"
+            >
+              <div className="service-image" style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
+                <img 
+                  src={service.image}
+                  alt={language === 'ru' ? service.titleRu : service.titleRo}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                {/* Mobile overlay with title */}
+                <div className="service-mobile-overlay" style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: '16px',
+                  background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+                  display: 'none'
+                }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'white', margin: 0 }}>
+                    {language === 'ru' ? service.titleRu : service.titleRo}
+                  </h3>
+                </div>
+              </div>
+              <div className="service-content" style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
+                  {language === 'ru' ? service.titleRu : service.titleRo}
+                </h3>
+                <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  {language === 'ru' ? service.descRu : service.descRo}
+                </p>
+              </div>
             </div>
-            <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                {language === 'ru' ? '3D-моделирование и реверс-инжиниринг' : 'Modelare 3D și inginerie inversă'}
-              </h3>
-              <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {language === 'ru' 
-                  ? 'Создаём 3D-модели по эскизам, чертежам или физическим образцам. Восстанавливаем детали без документации.'
-                  : 'Creăm modele 3D după schițe, desene sau mostre fizice. Restaurăm piese fără documentație.'
-                }
-              </p>
-            </div>
-          </div>
-
-          {/* Service 2: 3D Printing */}
-          <div style={{
-            background: 'var(--bg-secondary)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-          }}
-          className="service-card"
-          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)'; }}
-          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div style={{ height: '200px', overflow: 'hidden' }}>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/g7p3eqpc_hg7bvuelu0b9d62vovo5zl9ggv7lkiqo.jpg"
-                alt="3D печать"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-            <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                {language === 'ru' ? '3D-печать' : 'Imprimare 3D'}
-              </h3>
-              <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {language === 'ru' 
-                  ? 'Печать на современных FDM-принтерах. PLA, PETG, ABS, TPU и другие материалы. Точность до 0.1мм.'
-                  : 'Imprimare pe imprimante FDM moderne. PLA, PETG, ABS, TPU și alte materiale. Precizie până la 0.1mm.'
-                }
-              </p>
-            </div>
-          </div>
-
-          {/* Service 3: Surface Smoothing */}
-          <div style={{
-            background: 'var(--bg-secondary)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-          }}
-          className="service-card"
-          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)'; }}
-          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div style={{ height: '200px', overflow: 'hidden' }}>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/zlo0qxbu_file_000000002c6c71f4b12c2b21b83fa631.png"
-                alt="Сглаживание поверхности"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-            <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                {language === 'ru' ? 'Сглаживание поверхности' : 'Netezirea suprafeței'}
-              </h3>
-              <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {language === 'ru' 
-                  ? 'Шлифовка, грунтовка и подготовка поверхности. Убираем слои печати для идеально гладкого результата.'
-                  : 'Șlefuire, grunduire și pregătirea suprafeței. Eliminăm straturile de imprimare pentru un rezultat perfect neted.'
-                }
-              </p>
-            </div>
-          </div>
-
-          {/* Service 4: Painting */}
-          <div style={{
-            background: 'var(--bg-secondary)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-          }}
-          className="service-card"
-          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)'; }}
-          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div style={{ height: '200px', overflow: 'hidden' }}>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/kexjlwqc_Screenshot_20251222_231032_YouTube.jpg"
-                alt="Покраска"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-            <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                {language === 'ru' ? 'Покраска' : 'Vopsire'}
-              </h3>
-              <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {language === 'ru' 
-                  ? 'Профессиональная покраска изделий. Металлик, матовые, глянцевые покрытия. Любые цвета и эффекты.'
-                  : 'Vopsire profesională a produselor. Acoperiri metalice, mate, lucioase. Orice culori și efecte.'
-                }
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
+
+        {/* Service Modal for Mobile */}
+        {selectedService && (
+          <div 
+            onClick={() => setSelectedService(null)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0,0,0,0.8)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: '20px',
+              animation: 'fadeIn 0.2s ease'
+            }}
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--bg-primary)',
+                borderRadius: '20px',
+                maxWidth: '500px',
+                width: '100%',
+                overflow: 'hidden',
+                animation: 'slideUp 0.3s ease'
+              }}
+            >
+              <div style={{ position: 'relative' }}>
+                <img 
+                  src={selectedService.image}
+                  alt={language === 'ru' ? selectedService.titleRu : selectedService.titleRo}
+                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                />
+                <button
+                  onClick={() => setSelectedService(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    background: 'rgba(0,0,0,0.5)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'white'
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '16px', color: 'var(--text-primary)' }}>
+                  {language === 'ru' ? selectedService.titleRu : selectedService.titleRo}
+                </h3>
+                <p style={{ fontSize: '16px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                  {language === 'ru' ? selectedService.descRu : selectedService.descRo}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile-specific styles */}
+        <style>{`
+          @media (max-width: 768px) {
+            .services-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 12px !important;
+            }
+            .service-card {
+              border-radius: 12px !important;
+            }
+            .service-image {
+              height: 140px !important;
+              aspect-ratio: 1 !important;
+            }
+            .service-mobile-overlay {
+              display: block !important;
+            }
+            .service-content {
+              display: none !important;
+            }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+        `}</style>
       </section>
 
       {/* CTA Section */}
