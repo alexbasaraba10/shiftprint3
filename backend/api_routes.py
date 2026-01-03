@@ -881,6 +881,67 @@ async def calculate_cost(request: CalculateCostRequest):
     )
 
 
+# ============ SHOP ORDERS ============
+class ShopOrderData(BaseModel):
+    itemId: str
+    itemName: str
+    price: float
+    quantity: int
+    totalPrice: float
+    customerName: str
+    customerPhone: str
+
+@router.post("/api/shop-orders")
+async def create_shop_order(data: ShopOrderData):
+    """Create order for shop items"""
+    try:
+        order_data = {
+            "type": "shop",
+            "itemId": data.itemId,
+            "itemName": data.itemName,
+            "price": data.price,
+            "quantity": data.quantity,
+            "totalPrice": data.totalPrice,
+            "customerName": data.customerName,
+            "customerPhone": data.customerPhone,
+            "status": "pending",
+            "createdAt": datetime.utcnow()
+        }
+        
+        result = await db.shop_orders.insert_one(order_data)
+        order_id = str(result.inserted_id)
+        
+        # Send Telegram notification
+        try:
+            import telegram
+            TELEGRAM_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+            TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+            
+            if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
+                bot = telegram.Bot(token=TELEGRAM_TOKEN)
+                message = f"""🛒 <b>Новый заказ из магазина</b>
+
+📦 <b>Товар:</b> {data.itemName}
+💰 <b>Цена:</b> {data.price} MDL × {data.quantity} шт = <b>{data.totalPrice} MDL</b>
+
+👤 <b>Клиент:</b> {data.customerName}
+📞 <b>Телефон:</b> <code>{data.customerPhone}</code>
+
+📅 {datetime.now().strftime('%d.%m.%Y %H:%M')}"""
+                
+                await bot.send_message(
+                    chat_id=TELEGRAM_CHAT_ID,
+                    text=message,
+                    parse_mode='HTML'
+                )
+        except Exception as e:
+            print(f"Telegram error: {e}")
+        
+        return {"success": True, "orderId": order_id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 # ============ USER DISCOUNT SYSTEM ============
 @router.get("/api/user/discount/{email}")
 async def get_user_discount(email: str):
