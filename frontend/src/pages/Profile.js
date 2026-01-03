@@ -422,11 +422,11 @@ const Profile = () => {
                 <Package size={20} color="var(--brand-primary)" />
               </div>
               <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-                {language === 'ru' ? 'Всего заказов' : 'Total comenzi'}
+                {language === 'ru' ? 'Выполненные заказы' : 'Comenzi finalizate'}
               </span>
             </div>
             <div style={{ fontSize: '32px', fontWeight: 700, color: 'var(--brand-primary)' }}>
-              {orders.length}
+              {orders.filter(o => o.status === 'completed').length}
             </div>
           </div>
 
