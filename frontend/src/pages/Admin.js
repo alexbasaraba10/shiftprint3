@@ -504,57 +504,64 @@ const Admin = () => {
               padding: '40px'
             }}>
               <h2 className="heading-1" style={{ marginBottom: '24px' }}>
-                {language === 'ru' ? 'Настройки Печати' : 'Setări Printare'}
+                {language === 'ru' ? 'Настройки расчёта стоимости' : 'Setări calcul preț'}
               </h2>
               <p className="body-medium" style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>
                 {language === 'ru' 
-                  ? 'Эти параметры используются для автоматического расчёта стоимости печати' 
-                  : 'Acești parametri sunt utilizați pentru calculul automat al prețului de printare'}
+                  ? 'Эти параметры используются для автоматического расчёта стоимости печати. Формула: (Материал + Электричество + Амортизация) × Множитель' 
+                  : 'Acești parametri sunt utilizați pentru calculul automat al prețului. Formula: (Material + Electricitate + Amortizare) × Multiplicator'}
               </p>
               <div style={{ display: 'grid', gap: '24px' }}>
                 <div>
-                  <Label>{language === 'ru' ? 'Стоимость электричества (Lei за кВт·ч)' : 'Costul electricității (Lei pe kWh)'}</Label>
+                  <Label>{language === 'ru' ? 'Стоимость электричества (Lei за 1000 Ватт)' : 'Cost electricitate (Lei per 1000 Wați)'}</Label>
                   <Input 
                     type="number" 
                     step="0.1" 
                     value={printSettings.electricityCost} 
-                    onChange={(e) => setPrintSettings({...printSettings, electricityCost: parseFloat(e.target.value)})} 
-                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
-                  />
-                </div>
-                <div>
-                  <Label>{language === 'ru' ? 'Мощность принтера (кВт)' : 'Puterea imprimantei (kW)'}</Label>
-                  <Input 
-                    type="number" 
-                    step="0.05" 
-                    value={printSettings.printerPower} 
-                    onChange={(e) => setPrintSettings({...printSettings, printerPower: parseFloat(e.target.value)})} 
+                    onChange={(e) => setPrintSettings({...printSettings, electricityCost: parseFloat(e.target.value) || 0})} 
                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
                   />
                   <p className="body-small" style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
-                    {language === 'ru' ? '(Например: 0.3 кВт = 300 Ватт)' : '(De exemplu: 0.3 kW = 300 Wați)'}
+                    {language === 'ru' ? 'Из счёта за электричество (тариф)' : 'Din factura de electricitate (tarif)'}
                   </p>
                 </div>
                 <div>
-                  <Label>{language === 'ru' ? 'Стоимость работы (Lei в час)' : 'Costul muncii (Lei pe oră)'}</Label>
+                  <Label>{language === 'ru' ? 'Мощность 3D принтера (Ватт)' : 'Puterea imprimantei 3D (Wați)'}</Label>
                   <Input 
                     type="number" 
-                    value={printSettings.laborCost} 
-                    onChange={(e) => setPrintSettings({...printSettings, laborCost: parseFloat(e.target.value)})} 
-                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
-                  />
-                </div>
-                <div>
-                  <Label>{language === 'ru' ? 'Наценка (%)' : 'Adaos (%)'}</Label>
-                  <Input 
-                    type="number" 
-                    step="1" 
-                    value={printSettings.markup} 
-                    onChange={(e) => setPrintSettings({...printSettings, markup: parseFloat(e.target.value)})} 
+                    step="10" 
+                    value={printSettings.printerPower} 
+                    onChange={(e) => setPrintSettings({...printSettings, printerPower: parseFloat(e.target.value) || 0})} 
                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
                   />
                   <p className="body-small" style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
-                    {language === 'ru' ? '(Процент наценки на итоговую стоимость)' : '(Procent de adaos la prețul final)'}
+                    {language === 'ru' ? '(Например: 300 Ватт для Ender 3)' : '(De exemplu: 300 Wați pentru Ender 3)'}
+                  </p>
+                </div>
+                <div>
+                  <Label>{language === 'ru' ? 'Амортизация принтера (Lei в час)' : 'Amortizare imprimantă (Lei pe oră)'}</Label>
+                  <Input 
+                    type="number" 
+                    step="1"
+                    value={printSettings.laborCost} 
+                    onChange={(e) => setPrintSettings({...printSettings, laborCost: parseFloat(e.target.value) || 0})} 
+                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
+                  />
+                  <p className="body-small" style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
+                    {language === 'ru' ? 'Износ оборудования за час работы' : 'Uzura echipamentului pe oră de lucru'}
+                  </p>
+                </div>
+                <div>
+                  <Label>{language === 'ru' ? 'Множитель (коэффициент)' : 'Multiplicator (coeficient)'}</Label>
+                  <Input 
+                    type="number" 
+                    step="0.1" 
+                    value={printSettings.markup} 
+                    onChange={(e) => setPrintSettings({...printSettings, markup: parseFloat(e.target.value) || 1})} 
+                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-medium)' }} 
+                  />
+                  <p className="body-small" style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
+                    {language === 'ru' ? 'На сколько умножить себестоимость. Например: 2 = цена × 2' : 'Cu cât să înmulțim costul. De exemplu: 2 = preț × 2'}
                   </p>
                 </div>
                 <Button className="btn-primary" onClick={handleSavePrintSettings}>
