@@ -402,6 +402,8 @@ async def upload_file(
 📄 <b>Файл:</b> {file.filename}
 🎨 <b>Материал:</b> {materialName if materialName else 'Выбор оператора'}
 """
+            if materialColor:
+                message += f"🌈 <b>Цвет:</b> {materialColor}\n"
             if display_weight:
                 message += f"⚖️ <b>Вес:</b> {display_weight}г\n"
             if display_time > 0:
