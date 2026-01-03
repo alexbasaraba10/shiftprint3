@@ -2,13 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import InstagramStories from '../components/InstagramStories';
 
 const Home = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [galleryItems, setGalleryItems] = useState([]);
+  const [selectedService, setSelectedService] = useState(null);
+
+  // Services data
+  const services = [
+    {
+      id: 1,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/kb55rmiz_20250923_205705%20%282%29.jpg",
+      titleRu: '3D-моделирование и реверс-инжиниринг',
+      titleRo: 'Modelare 3D și inginerie inversă',
+      descRu: 'Создаём 3D-модели по эскизам, чертежам или физическим образцам. Восстанавливаем детали без документации.',
+      descRo: 'Creăm modele 3D după schițe, desene sau mostre fizice. Restaurăm piese fără documentație.'
+    },
+    {
+      id: 2,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/g7p3eqpc_hg7bvuelu0b9d62vovo5zl9ggv7lkiqo.jpg",
+      titleRu: '3D-печать',
+      titleRo: 'Imprimare 3D',
+      descRu: 'Печать на современных FDM-принтерах. PLA, PETG, ABS, TPU и другие материалы. Точность до 0.1мм.',
+      descRo: 'Imprimare pe imprimante FDM moderne. PLA, PETG, ABS, TPU și alte materiale. Precizie până la 0.1mm.'
+    },
+    {
+      id: 3,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/zlo0qxbu_file_000000002c6c71f4b12c2b21b83fa631.png",
+      titleRu: 'Сглаживание поверхности',
+      titleRo: 'Netezirea suprafeței',
+      descRu: 'Шлифовка, грунтовка и подготовка поверхности. Убираем слои печати для идеально гладкого результата.',
+      descRo: 'Șlefuire, grunduire și pregătirea suprafeței. Eliminăm straturile de imprimare pentru un rezultat perfect neted.'
+    },
+    {
+      id: 4,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/kexjlwqc_Screenshot_20251222_231032_YouTube.jpg",
+      titleRu: 'Покраска',
+      titleRo: 'Vopsire',
+      descRu: 'Профессиональная покраска изделий. Металлик, матовые, глянцевые покрытия. Любые цвета и эффекты.',
+      descRo: 'Vopsire profesională a produselor. Acoperiri metalice, mate, lucioase. Orice culori și efecte.'
+    }
+  ];
 
   useEffect(() => {
     const loadGallery = async () => {
