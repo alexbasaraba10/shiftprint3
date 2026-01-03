@@ -213,6 +213,7 @@ async def upload_file(
     file: UploadFile = File(...),
     materialId: Optional[str] = Form(None),
     materialName: Optional[str] = Form(None),
+    materialColor: Optional[str] = Form(None),
     operatorChoice: bool = Form(False),
     purpose: Optional[str] = Form(None),
     loads: Optional[str] = Form(None),
