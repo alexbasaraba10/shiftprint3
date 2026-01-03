@@ -627,19 +627,6 @@ const Calculator = () => {
                   )}
                 </div>
                 
-                <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-around', fontSize: '14px' }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ opacity: 0.85, marginBottom: '4px' }}>⚖️ {language === 'ru' ? 'Вес' : 'Greutate'}</div>
-                      <div style={{ fontWeight: 700, fontSize: '18px' }}>{estimatedPrice.weight} г</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ opacity: 0.85, marginBottom: '4px' }}>⏱️ {language === 'ru' ? 'Время печати' : 'Timp printare'}</div>
-                      <div style={{ fontWeight: 700, fontSize: '18px' }}>{estimatedPrice.time} ч</div>
-                    </div>
-                  </div>
-                </div>
-                
                 {orderStatus !== 'approved' && orderStatus !== 'price_changed' && (
                   <div style={{ fontSize: '12px', opacity: 0.8 }}>
                     * {language === 'ru' ? 'Окончательная цена будет подтверждена оператором' : 'Prețul final va fi confirmat de operator'}
