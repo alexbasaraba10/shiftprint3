@@ -294,7 +294,7 @@ const Calculator = () => {
         if (!operatorChoice && selectedMaterial) {
           formData.append('materialId', selectedMaterial);
           formData.append('materialName', language === 'ru' ? material.name : material.nameRo);
-          if (selectedColor) formData.append('color', selectedColor);
+          if (selectedColor) formData.append('materialColor', selectedColor);
         }
         
         if (purpose) formData.append('purpose', purpose);
