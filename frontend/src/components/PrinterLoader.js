@@ -37,12 +37,10 @@ const PrinterLoader = ({ size = 'medium', text = 'ShiftPrint' }) => {
             </div>
           </div>
           
-          {/* Build plate */}
+          {/* Build plate with growing object */}
           <div className="build-plate">
             <div className="printed-layers">
-              <div className="layer"></div>
-              <div className="layer"></div>
-              <div className="layer"></div>
+              <div className="printed-object"></div>
             </div>
           </div>
           
