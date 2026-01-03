@@ -50,6 +50,7 @@ const Calculator = () => {
   const [estimatedPrice, setEstimatedPrice] = useState(null);
   const [confirmedPrice, setConfirmedPrice] = useState(null);
   const [customDimensions, setCustomDimensions] = useState({ x: '', y: '', z: '' });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const maxBuildVolume = { x: 300, y: 300, z: 330 };
 
