@@ -16,10 +16,6 @@ const Shop = () => {
   const [formData, setFormData] = useState({ name: '', surname: '', phone: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    loadShopItems();
-  }, []);
-
   const loadShopItems = async () => {
     try {
       const data = await shopAPI.getAll();
@@ -29,6 +25,10 @@ const Shop = () => {
       setShopItems(saved ? JSON.parse(saved) : mockShopItems);
     }
   };
+
+  useEffect(() => {
+    loadShopItems();
+  }, []);
 
   const openOrderModal = (item) => {
     setOrderModal(item);
