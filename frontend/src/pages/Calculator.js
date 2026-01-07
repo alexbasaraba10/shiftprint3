@@ -32,6 +32,7 @@ const colorMap = {
 const Calculator = () => {
   const { t, language } = useLanguage();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [activeFileIndex, setActiveFileIndex] = useState(0);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [operatorChoice, setOperatorChoice] = useState(false);
@@ -51,6 +52,7 @@ const Calculator = () => {
   const [confirmedPrice, setConfirmedPrice] = useState(null);
   const [customDimensions, setCustomDimensions] = useState({ x: '', y: '', z: '' });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [fileSettings, setFileSettings] = useState({}); // Store settings per file
 
   const maxBuildVolume = { x: 300, y: 300, z: 330 };
 
