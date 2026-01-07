@@ -5,7 +5,9 @@ import { galleryAPI } from '../utils/api';
 
 const Gallery = () => {
   const { t, language } = useLanguage();
-  const [galleryItems, setGalleryItems] = useState([]);
+  // Initialize with mock data immediately for fast first paint
+  const [galleryItems, setGalleryItems] = useState(mockGalleryItems);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadGallery();
@@ -14,11 +16,17 @@ const Gallery = () => {
   const loadGallery = async () => {
     try {
       const data = await galleryAPI.getAll();
-      setGalleryItems(data.length > 0 ? data : mockGalleryItems);
+      if (data.length > 0) {
+        setGalleryItems(data);
+      }
     } catch (error) {
+      // Keep mock data if API fails
       const saved = localStorage.getItem('gallery');
-      setGalleryItems(saved ? JSON.parse(saved) : mockGalleryItems);
+      if (saved) {
+        setGalleryItems(JSON.parse(saved));
+      }
     }
+    setIsLoading(false);
   };
 
   return (
