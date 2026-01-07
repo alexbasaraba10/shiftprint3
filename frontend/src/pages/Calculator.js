@@ -54,6 +54,92 @@ const Calculator = () => {
 
   const maxBuildVolume = { x: 300, y: 300, z: 330 };
 
+  // Define functions before useEffect hooks
+  const loadOrderHistory = () => {
+    const history = localStorage.getItem('orderHistory');
+    if (history) setOrderHistory(JSON.parse(history));
+  };
+
+  const loadMaterials = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/materials`);
+      const data = await response.json();
+      setMaterials(data);
+    } catch (error) {
+      console.error('Error loading materials:', error);
+    }
+    setLoading(false);
+  };
+
+  const checkOrderStatus = async (orderId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/${orderId}/status`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'approved') {
+          setOrderStatus('approved');
+          if (data.finalCost) {
+            setConfirmedPrice(data.finalCost);
+          }
+        } else if (data.status === 'price_changed') {
+          setOrderStatus('price_changed');
+          if (data.finalCost) {
+            setConfirmedPrice(data.finalCost);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking order status:', error);
+    }
+  };
+
+  const calculatePrice = async () => {
+    if (!dimensions || !selectedMaterial) return;
+    
+    const material = materials.find(m => m.id === selectedMaterial);
+    if (!material) return;
+    
+    // Calculate weight based on volume and infill
+    const volume = dimensions.x * dimensions.y * dimensions.z * (scale ** 3); // mm³
+    const volumeCm3 = volume / 1000; // cm³
+    const infillMultiplier = parseInt(infill) / 100;
+    const density = 1.24; // g/cm³ for PLA
+    const weight = volumeCm3 * density * (0.2 + 0.8 * infillMultiplier); // Shell + infill
+    
+    // Estimate print time (rough: 1cm³ = 5 minutes)
+    const printTimeMinutes = volumeCm3 * 5 * (0.5 + 0.5 * infillMultiplier);
+    const printTimeHours = printTimeMinutes / 60;
+    
+    // Get settings from backend
+    try {
+      const settingsRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/print-settings`);
+      const settings = await settingsRes.json();
+      
+      // Calculate cost
+      const materialCost = (weight / 1000) * material.price;
+      const electricityCost = (settings.printerPower / 1000) * printTimeHours * settings.electricityCost;
+      const depreciationCost = printTimeHours * settings.laborCost;
+      const subtotal = materialCost + electricityCost + depreciationCost;
+      const multiplier = settings.markup >= 1 ? settings.markup : 2;
+      const total = Math.round(subtotal * multiplier);
+      
+      setEstimatedPrice({
+        total,
+        weight: Math.round(weight * 10) / 10,
+        time: Math.round(printTimeHours * 10) / 10
+      });
+    } catch (error) {
+      // Fallback calculation
+      const total = Math.round((weight / 1000) * material.price * 2);
+      setEstimatedPrice({
+        total,
+        weight: Math.round(weight * 10) / 10,
+        time: Math.round((volumeCm3 * 5) / 60 * 10) / 10
+      });
+    }
+  };
+
   useEffect(() => {
     loadMaterials();
     loadOrderHistory();
@@ -83,12 +169,8 @@ const Calculator = () => {
     if (dimensions && selectedMaterial && !operatorChoice) {
       calculatePrice();
     }
-  }, [dimensions, selectedMaterial, scale, infill, layerHeight]);
-
-  const loadOrderHistory = () => {
-    const history = localStorage.getItem('orderHistory');
-    if (history) setOrderHistory(JSON.parse(history));
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dimensions, selectedMaterial, scale, infill, layerHeight, operatorChoice]);
 
   const saveToHistory = (order) => {
     const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
