@@ -19,7 +19,6 @@ const PrinterLoader = ({ size = 'medium', text = 'ShiftPrint' }) => {
             </span>
           ))}
         </div>
-        <div className="typing-cursor">|</div>
       </div>
       
       {/* Simple realistic 3D Printer */}
