@@ -16,18 +16,17 @@ const Shop = () => {
   const [formData, setFormData] = useState({ name: '', surname: '', phone: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  const loadShopItems = async () => {
-    try {
-      const data = await shopAPI.getAll();
-      setShopItems(data.length > 0 ? data : mockShopItems);
-    } catch (error) {
-      const saved = localStorage.getItem('shopItems');
-      setShopItems(saved ? JSON.parse(saved) : mockShopItems);
-    }
-  };
-
   useEffect(() => {
-    loadShopItems();
+    const fetchItems = async () => {
+      try {
+        const data = await shopAPI.getAll();
+        setShopItems(data.length > 0 ? data : mockShopItems);
+      } catch (error) {
+        const saved = localStorage.getItem('shopItems');
+        setShopItems(saved ? JSON.parse(saved) : mockShopItems);
+      }
+    };
+    fetchItems();
   }, []);
 
   const openOrderModal = (item) => {
