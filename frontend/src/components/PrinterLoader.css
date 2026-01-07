@@ -52,26 +52,6 @@
   }
 }
 
-.typing-cursor {
-  font-size: 32px;
-  font-weight: 300;
-  color: #0071E3;
-  animation: cursorBlink 0.7s infinite;
-}
-
-.printer-small .typing-cursor {
-  font-size: 18px;
-}
-
-.printer-large .typing-cursor {
-  font-size: 44px;
-}
-
-@keyframes cursorBlink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
 /* ============================================
    3D PRINTER
    ============================================ */
