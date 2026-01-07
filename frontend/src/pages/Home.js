@@ -72,7 +72,8 @@ const Home = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)'
       }}>
         {/* Video Background */}
         <video
@@ -80,6 +81,7 @@ const Home = () => {
           loop
           muted
           playsInline
+          preload="auto"
           style={{
             position: 'absolute',
             top: 0,
@@ -88,6 +90,9 @@ const Home = () => {
             height: '100%',
             objectFit: 'cover',
             zIndex: 0
+          }}
+          onError={(e) => {
+            e.target.style.display = 'none';
           }}
         >
           <source src="https://customer-assets.emergentagent.com/job_f1d7a600-9be3-4269-857f-414a16853032/artifacts/mi7amiy6_lv_0_20251123134625.mp4" type="video/mp4" />
