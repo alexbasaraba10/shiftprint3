@@ -8,8 +8,31 @@ import InstagramStories from '../components/InstagramStories';
 const Home = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
-  const [galleryItems, setGalleryItems] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
+  
+  // Default stories data for instant display
+  const defaultStories = [
+    {
+      id: 1,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/kb55rmiz_20250923_205705%20%282%29.jpg",
+      title: "3D модель",
+      titleRo: "Model 3D"
+    },
+    {
+      id: 2,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/g7p3eqpc_hg7bvuelu0b9d62vovo5zl9ggv7lkiqo.jpg",
+      title: "Прототип",
+      titleRo: "Prototip"
+    },
+    {
+      id: 3,
+      image: "https://customer-assets.emergentagent.com/job_06ead0f4-f0d5-420e-a22e-b3b41877c094/artifacts/zlo0qxbu_file_000000002c6c71f4b12c2b21b83fa631.png",
+      title: "Готовое изделие",
+      titleRo: "Produs finit"
+    }
+  ];
+  
+  const [galleryItems, setGalleryItems] = useState(defaultStories);
 
   // Services data
   const services = [
