@@ -396,18 +396,59 @@ const Calculator = () => {
 
         <div className="calculator-layout" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
+          {/* File Tabs - for multiple files */}
+          {selectedFiles.length > 1 && (
+            <div style={{
+              display: 'flex',
+              gap: '8px',
+              overflowX: 'auto',
+              padding: '4px',
+              background: 'var(--bg-secondary)',
+              borderRadius: '12px',
+              border: '1px solid var(--border-subtle)'
+            }}>
+              {selectedFiles.map((file, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveFileIndex(index)}
+                  style={{
+                    padding: '10px 16px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: activeFileIndex === index 
+                      ? 'linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-active) 100%)'
+                      : 'transparent',
+                    color: activeFileIndex === index ? 'white' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  📄 {file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* 3D Preview */}
           {selectedFiles.length > 0 && (
             <div className="preview-section">
               <h3 style={{ marginBottom: '12px', fontWeight: 600 }}>
                 🎮 {language === 'ru' ? '3D Просмотр' : 'Previzualizare 3D'}
+                {selectedFiles.length > 1 && (
+                  <span style={{ fontWeight: 400, fontSize: '14px', color: 'var(--text-muted)', marginLeft: '8px' }}>
+                    ({activeFileIndex + 1} / {selectedFiles.length})
+                  </span>
+                )}
               </h3>
               <Suspense fallback={
                 <div style={{ height: '300px', background: 'var(--bg-secondary)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Loader2 className="animate-spin" size={32} color="var(--brand-primary)" />
                 </div>
               }>
-                <STLViewer file={selectedFiles[0]} scale={scale} onDimensionsChange={setDimensions} />
+                <STLViewer file={selectedFiles[activeFileIndex]} scale={scale} onDimensionsChange={setDimensions} />
               </Suspense>
 
               {/* Scale Control */}
